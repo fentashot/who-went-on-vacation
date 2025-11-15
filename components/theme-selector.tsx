@@ -38,6 +38,7 @@ export interface ThemeConfig {
   accentHover: string;
   text: string;
   ring: string;
+  border: string;
 }
 
 export const getThemeConfig = (theme: Theme): ThemeConfig => {
@@ -49,6 +50,7 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(185, 28, 28)',
       text: 'rgb(239, 68, 68)',
       ring: 'rgb(239, 68, 68)',
+      border: 'rgb(127, 29, 29)',
     },
     blue: {
       gradient: { from: 'rgba(29, 78, 127, 0.25)', via: 'rgba(29, 78, 127, 0.15)', to: 'rgba(15, 52, 90, 0.1)' },
@@ -57,6 +59,8 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(29, 78, 216)',
       text: 'rgb(96, 165, 250)',
       ring: 'rgb(96, 165, 250)',
+      border: 'rgb(29, 78, 127)',
+
     },
     green: {
       gradient: { from: 'rgba(29, 127, 78, 0.25)', via: 'rgba(29, 127, 78, 0.15)', to: 'rgba(15, 90, 52, 0.1)' },
@@ -65,6 +69,8 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(21, 128, 61)',
       text: 'rgb(74, 222, 128)',
       ring: 'rgb(74, 222, 128)',
+      border: 'rgb(29, 127, 29)',
+
     },
     yellow: {
       gradient: { from: 'rgba(127, 106, 29, 0.3)', via: 'rgba(127, 106, 29, 0.2)', to: 'rgba(90, 75, 15, 0.1)' },
@@ -73,6 +79,7 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(161, 98, 7)',
       text: 'rgb(250, 204, 21)',
       ring: 'rgb(250, 204, 21)',
+      border: 'rgb(127, 100, 29)',
     },
     purple: {
       gradient: { from: 'rgba(88, 29, 127, 0.3)', via: 'rgba(88, 29, 127, 0.15)', to: 'rgba(62, 15, 90, 0.1)' },
@@ -81,6 +88,7 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(126, 34, 206)',
       text: 'rgb(192, 132, 252)',
       ring: 'rgb(192, 132, 252)',
+      border: 'rgb(88, 29, 127)',
     },
     pink: {
       gradient: { from: 'rgba(127, 29, 88, 0.3)', via: 'rgba(127, 29, 88, 0.15)', to: 'rgba(90, 15, 62, 0.1)' },
@@ -89,6 +97,8 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(219, 39, 119)',
       text: 'rgb(244, 114, 182)',
       ring: 'rgb(244, 114, 182)',
+      border: 'rgb(127, 29, 88)',
+
     },
     white: {
       gradient: { from: 'rgba(200, 200, 200, 0.12)', via: 'rgba(150, 150, 150, 0.07)', to: 'rgba(100, 100, 100, 0.02)' },
@@ -97,6 +107,7 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
       accentHover: 'rgb(203, 213, 225, 0.7)',
       text: 'rgb(241, 245, 249)',
       ring: 'rgb(241, 245, 249)',
+      border: 'rgb(200, 200, 200)',
     },
   };
   return configs[theme];
@@ -158,7 +169,7 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="bg-black/30 border-zinc-700/50 text-white hover:bg-black/50 hover:text-white backdrop-blur-sm"
+          className="bg-black/10 border-zinc-700/50 text-white hover:bg-black/30 hover:text-white backdrop-blur-sm"
         >
           <Palette className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline mr-2">Theme:</span>
@@ -168,12 +179,12 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
           />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-zinc-900/95 border-zinc-700/50 backdrop-blur-md">
+      <DropdownMenuContent align="end" className="bg-zinc-900/85 border-zinc-700/50 backdrop-blur-md">
         {themes.map((theme) => (
           <DropdownMenuItem
             key={theme.name}
             onClick={() => handleThemeChange(theme.name)}
-            className="cursor-pointer hover:bg-zinc-800/60 focus:bg-zinc-800/60 text-white"
+            className="cursor-pointer hover:bg-zinc-800/40 focus:bg-zinc-800/40 text-white"
           >
             <div className="flex items-center gap-3 w-full">
               <div

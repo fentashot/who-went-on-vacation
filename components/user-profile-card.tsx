@@ -29,7 +29,7 @@ export function UserProfileCard({ profile }: UserProfileCardProps) {
   const faceitUrl = `https://www.faceit.com/en/search/player/${profile.personaname}`;
 
   return (
-    <Card className="bg-zinc-900/60 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-fit mx-auto">
+    <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-fit mx-auto">
       <CardContent>
         <div className="flex flex-col md:flex-row gap-6">
           {/* Avatar & Basic Info */}

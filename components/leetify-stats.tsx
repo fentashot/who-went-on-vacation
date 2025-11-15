@@ -90,7 +90,7 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
 
   if (loading) {
     return (
-      <Card className="bg-zinc-900/60 border-zinc-800/50 backdrop-blur-md overflow-hidden">
+      <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden">
         <CardContent className="p-12 flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-pink-500 animate-spin" />
           <span className="ml-3 text-gray-400">Loading Leetify stats...</span>
@@ -100,7 +100,7 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
   }
 
   return (
-    <Card className="bg-zinc-900/60 border-zinc-800/50 backdrop-blur-md overflow-hidden">
+    <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden">
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -125,13 +125,13 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
 
         {/* Match Types */}
         <div className="flex gap-2 mb-6">
-          <Badge variant="outline" className="bg-black/30 border-zinc-700/50 text-white">
+          <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white">
             FACEIT: {displayStats.faceit}
           </Badge>
-          <Badge variant="outline" className="bg-black/30 border-zinc-700/50 text-white">
+          <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white">
             Premier: {displayStats.premier}
           </Badge>
-          <Badge variant="outline" className="bg-black/30 border-zinc-700/50 text-white">
+          <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white">
             Competitive: {displayStats.competitive}
           </Badge>
         </div>

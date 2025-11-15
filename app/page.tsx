@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Eye, Users, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, Eye, Users, ArrowUp, ArrowDown, Loader2Icon } from 'lucide-react';
 import { BannedFriendCard } from '@/components/banned-friend-card';
 import { UserProfileCard } from '@/components/user-profile-card';
 import { ThemeSelector, type Theme, getThemeConfig, getStoredTheme } from '@/components/theme-selector';
+import { UpperBar } from '@/components/upper-bar';
+import { LoadingSkeleton } from '@/components/loading-skeleton';
 
 interface BannedFriend {
   steamid: string;
@@ -34,7 +36,7 @@ interface ApiResponse {
 }
 
 const BADGE_EXAMPLES = ['donkgojo', '76561198034202275', '../id/donkgojo', '../profiles/76561198034202275'];
-const BADGE_CLASS = 'bg-zinc-900/40 text-gray-400 hover:bg-zinc-800/60 backdrop-blur-sm border border-zinc-700/30';
+const BADGE_CLASS = 'bg-zinc-900/20 text-gray-400 hover:bg-zinc-800/30 backdrop-blur-sm border border-zinc-700/30';
 
 export default function Home() {
   const [profileUrl, setProfileUrl] = useState('');
@@ -45,6 +47,7 @@ export default function Home() {
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [currentTheme, setCurrentTheme] = useState<Theme>('white');
   const [mounted, setMounted] = useState(false);
+  const [firstSearch, setFirstSearch] = useState(false);
 
   useEffect(() => {
     setCurrentTheme(getStoredTheme());
@@ -66,6 +69,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     setResult(null);
+    if (!firstSearch) setFirstSearch(true);
 
     try {
       const res = await fetch('/api/steam', {
@@ -84,6 +88,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+    console.log(firstSearch);
   };
 
   const SortButton = ({ order, icon: Icon, label }: { order: 'newest' | 'oldest'; icon: React.ComponentType<{ className?: string }>; label: string }) => {
@@ -92,12 +97,12 @@ export default function Home() {
       <Button
         onClick={() => setSortOrder(order)}
         variant="outline"
-        className={`h-10 rounded-lg transition-all duration-500 ${isActive ? 'text-white' : 'bg-zinc-900/60 border-zinc-700/50 text-white hover:bg-zinc-800/60'}`}
+        className={`h-10 rounded-lg transition-all duration-500 ${isActive ? 'text-white hover:text-gray-200' : 'bg-zinc-900/30 border-zinc-700/50 text-white hover:text-gray-200 hover:bg-zinc-800/40'}`}
         style={isActive ? { backgroundColor: themeConfig.accent, borderColor: themeConfig.accent } : undefined}
         onMouseEnter={(e) => isActive && (e.currentTarget.style.backgroundColor = themeConfig.accentHover)}
         onMouseLeave={(e) => isActive && (e.currentTarget.style.backgroundColor = themeConfig.accent)}
       >
-        <Icon className="w-4 h-4 mr-2" />
+        <Icon className="min-w-4 min-h-4" />
         {label}
       </Button>
     );
@@ -110,56 +115,65 @@ export default function Home() {
       '--theme-gradient-to': themeConfig.gradient.to,
       '--theme-grid-color': themeConfig.gridColor,
     } as React.CSSProperties}>
+
       <div className="fixed inset-0 bg-black pointer-events-none">
         <div className={`absolute inset-0 background-grid transition-opacity duration-1200 ${mounted ? 'opacity-100' : 'opacity-0'}`} />
         <div className={`absolute inset-0 background-gradient transition-opacity duration-1200 ${mounted ? 'opacity-100' : 'opacity-0'}`} />
       </div>
 
-      <div className="relative min-h-screen flex flex-col items-center px-4 py-20">
+      <div className="relative min-h-screen flex flex-col items-center s">
+
         <div className="absolute top-4 right-4 z-10">
           <ThemeSelector currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
         </div>
-
-        <div className={`w-full flex flex-col items-center transition-all duration-700 ${result ? 'mt-0' : 'mt-32'}`}>
+        {/* <UpperBar /> */}
+        <div className={`w-full flex flex-col items-center transition-all duration-700 ${firstSearch ? 'mt-[10vh]' : 'mt-[30vh] ]'}`}>
           <div className="text-center space-y-4 mb-12">
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <Eye className="w-10 h-10 transition-colors duration-700" style={{ color: themeConfig.text }} />
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
                 <span className="transition-colors duration-700" style={{ color: themeConfig.text }}>One search,</span>{' '}
-                <span className="text-white">all bans.</span>
+                <span className="text-white">
+                  all bans
+                  <span className="inline-block w-8 text-left">
+                    <span className={loading ? "animate-blink-dots" : "opacity-0"}>
+                      <span>.</span>
+                      <span>.</span>
+                      <span>.</span>
+                    </span>
+                  </span>
+                </span>
               </h1>
             </div>
             <p className="text-gray-400 text-lg">Steam VAC Ban Checker</p>
           </div>
 
-          <div className="w-full max-w-3xl mb-8">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="relative">
-                <Input
+          <div className="w-full max-w-3xl">
+            <form onSubmit={handleSubmit} className="space-y-14">
+              <div className="flex">
+                <input
                   type="text"
                   value={profileUrl}
                   onChange={(e) => setProfileUrl(e.target.value)}
                   placeholder="Enter Steam profile URL or ID..."
-                  className="w-full h-16 bg-zinc-900/60 border-zinc-700/50 text-white placeholder:text-gray-500 pr-36 text-lg backdrop-blur-md rounded-2xl transition-all duration-500"
-                  style={{ '--tw-ring-color': themeConfig.ring } as React.CSSProperties}
+                  className="w-full border-r-0 h-14 bg-zinc-900/30 border-2 px-4 focus:ring-0 focus:outline-none border-zinc-700/50 text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none  transition-all duration-500"
                   disabled={loading}
                   required
                 />
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="absolute right-2 top-2 h-12 text-white rounded-xl px-6 transition-all duration-500"
-                  style={{ backgroundColor: themeConfig.accent }}
+                  className={"h-14 text-white rounded-xl transition-all duration-500 rounded-l-none z-10 border-2 border-l-0"}
+                  style={{ backgroundColor: themeConfig.accent, borderColor: themeConfig.border }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeConfig.accentHover}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeConfig.accent}
                 >
-                  <Search className="w-4 h-4 mr-2" />
-                  {loading ? 'Searching...' : 'Search'}
+                  {loading ? <Loader2Icon className="min-w-12 min-h-6 animate-spin" /> : <Search className="min-w-12 min-h-6" />}
                 </Button>
               </div>
 
-              <div className={"text-center " + (loading && 'opacity-0 ') + (result ? ' hidden' : '')}>
-                <p className="text-xs text-gray-500 mb-3">Supported formats</p>
+              <div className={"text-center " + (loading && 'hidden') + (result ? ' hidden' : '')}>
+                <p className="text-xs text-gray-500 mb-3 mt-6">Supported formats</p>
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   {BADGE_EXAMPLES.map(text => (
                     <Badge key={text} variant="secondary" className={BADGE_CLASS}>{text}</Badge>
@@ -177,24 +191,27 @@ export default function Home() {
             </div>
           )}
 
+          {/* {!loading && result && <LoadingSkeleton />} */}
+          {loading && !result && <LoadingSkeleton />}
+
           {result && (
-            <div className="w-full max-w-6xl mt-8 space-y-6">
+            <div className="w-full max-w-6xl space-y-14">
               {result.userProfile && (
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div>
                   <UserProfileCard profile={result.userProfile} />
                 </div>
               )}
 
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '100ms' }}>
-                <div className="my-10 text-center">
+              <div className="space-y-10 px-2">
+                <div className="text-center">
                   <h2 className="text-2xl font-bold text-white mb-4">{result.message}</h2>
                   {result.totalFriends !== undefined && (
                     <div className="flex items-center justify-center gap-3 flex-wrap">
-                      <Badge variant="outline" className="bg-black/30 border-zinc-700/50 text-white px-4 py-2 backdrop-blur w-52 text-sm">
+                      <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white px-4 py-2 backdrop-blur w-52 text-sm">
                         <Users className="min-w-4 min-h-4 mr-1 text-zinc-400" />
                         Total friends: <span className="font-bold ml-1">{result.totalFriends}</span>
                       </Badge>
-                      <Badge variant="outline" className="bg-black/30 text-white px-4 py-2 backdrop-blur-sm w-52 text-sm transition-all duration-500" style={{ borderColor: `${themeConfig.accent}80` }}>
+                      <Badge variant="outline" className="bg-black/10 text-white px-4 py-2 backdrop-blur-sm w-52 text-sm transition-all duration-500" style={{ borderColor: `${themeConfig.accent}80` }}>
                         <Eye className="min-w-4 min-h-4 mr-1 transition-colors duration-500" style={{ color: themeConfig.text }} />
                         With bans: <span className="font-bold ml-1 transition-colors duration-500" style={{ color: themeConfig.text }}>{result.bannedFriends.length}</span>
                       </Badge>
@@ -210,7 +227,7 @@ export default function Home() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search by name..."
-                        className="flex-1 h-10 bg-zinc-900/60 border-zinc-700/50 text-white placeholder:text-gray-500 backdrop-blur-md rounded-lg"
+                        className="flex-1 h-10 bg-zinc-900/30 border-zinc-700/50 text-white placeholder:text-gray-500 backdrop-blur-md rounded-lg"
                       />
                       <div className="flex gap-2">
                         <SortButton order="newest" icon={ArrowUp} label="Newest" />
@@ -226,18 +243,14 @@ export default function Home() {
 
                     {filteredAndSortedFriends.length > 0 ? (
                       <div className="grid md:px-12 lg:px-2 grid-cols-1 lg:grid-cols-2 gap-3 min-h-[200px]">
-                        {filteredAndSortedFriends.map((friend, index) => (
-                          <div
-                            key={friend.steamid}
-                            className="animate-in fade-in slide-in-from-bottom-2"
-                            style={{ animationDelay: `${index * 50}ms`, animationDuration: '400ms', animationFillMode: 'backwards' }}
-                          >
+                        {filteredAndSortedFriends.map((friend) => (
+                          <div key={friend.steamid}>
                             <BannedFriendCard friend={friend} />
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <Card className="bg-zinc-900/60 border-zinc-800/50 backdrop-blur-md min-h-[200px] flex items-center">
+                      <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md min-h-[200px] flex items-center">
                         <CardContent className="p-8 text-center w-full">
                           <p className="text-gray-400">No banned friends found matching &quot;{searchQuery}&quot;</p>
                         </CardContent>
@@ -245,7 +258,7 @@ export default function Home() {
                     )}
                   </>
                 ) : result.totalFriends !== undefined ? (
-                  <Card className="bg-zinc-900/60 border-zinc-800/50 backdrop-blur-md">
+                  <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
                     <CardContent className="p-12 text-center">
                       <p className="text-gray-400 text-lg">🎉 None of your friends have VAC or game bans!</p>
                     </CardContent>

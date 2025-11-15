@@ -114,11 +114,43 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: transparent !important;
   }
+
+  /* Custom Scrollbar - Webkit */
+  /* *::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    border-radius: 6px;
+    background-color: #dfe9eb;
+  }
+
+  *::-webkit-scrollbar-track:hover {
+    background-color: #b8c0c2;
+  }
+
+  *::-webkit-scrollbar-track:active {
+    background-color: #b8c0c2;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 9px;
+    background-color: #2b2e2d;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #030603;
+  }
+
+  *::-webkit-scrollbar-thumb:active {
+    background-color: #000000;
+  } */
 }
 
 /* Theme background animations */
@@ -155,4 +187,34 @@
     transparent 70%
   );
   transition: opacity 1.2s ease-in-out;
+}
+
+@keyframes blink {
+  0%,
+  20% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+  60%,
+  100% {
+    opacity: 0.3;
+  }
+}
+
+.animate-blink-dots {
+  color: #6b7280;
+}
+
+.animate-blink-dots span:nth-child(1) {
+  animation: blink 0.8s infinite;
+}
+
+.animate-blink-dots span:nth-child(2) {
+  animation: blink 0.8s infinite 0.15s;
+}
+
+.animate-blink-dots span:nth-child(3) {
+  animation: blink 0.8s infinite 0.3s;
 }

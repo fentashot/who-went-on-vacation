@@ -22,7 +22,7 @@ interface BannedFriend {
 
 export function BannedFriendCard({ friend }: { friend: BannedFriend }) {
   return (
-    <Card className="bg-zinc-900/60 border-zinc-800/50 hover:border-zinc-700 transition-colors backdrop-blur">
+    <Card className="bg-zinc-900/30 border-zinc-800/50 hover:border-zinc-700 transition-colors backdrop-blur">
       <CardContent>
         <div className="flex items-start gap-4">
           <Image src={friend.avatarmedium} alt={friend.personaname} width={64} height={64} className="rounded-lg" />
