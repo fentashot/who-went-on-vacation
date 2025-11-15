@@ -204,7 +204,6 @@ export default function ProfilePage() {
               onChange={(e) => handleGridSizeChange(Number(e.target.value))}
               className="w-16 h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-0"
             />
-            <span className="text-sm text-white font-medium w-6">{gridSize}</span>
           </Button>
 
           <ThemeSelector currentTheme={currentTheme} onThemeChange={setCurrentTheme} />
