@@ -58,7 +58,7 @@ export default function Home() {
     if (!result?.bannedFriends) return [];
     return result.bannedFriends
       .filter(f => !searchQuery.trim() || f.personaname.toLowerCase().includes(searchQuery.toLowerCase()))
-      .sort((a, b) => (sortOrder === 'newest' ? 1 : -1) * (b.DaysSinceLastBan - a.DaysSinceLastBan));
+      .sort((a, b) => sortOrder === 'newest' ? a.DaysSinceLastBan - b.DaysSinceLastBan : b.DaysSinceLastBan - a.DaysSinceLastBan);
   }, [result?.bannedFriends, searchQuery, sortOrder]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -190,12 +190,12 @@ export default function Home() {
                   <h2 className="text-2xl font-bold text-white mb-4">{result.message}</h2>
                   {result.totalFriends !== undefined && (
                     <div className="flex items-center justify-center gap-3 flex-wrap">
-                      <Badge variant="outline" className="bg-black/30 border-zinc-700/50 text-white px-4 py-2 backdrop-blur-sm w-52">
-                        <Users className="w-4 h-4 mr-2 text-zinc-400" />
+                      <Badge variant="outline" className="bg-black/30 border-zinc-700/50 text-white px-4 py-2 backdrop-blur w-52 text-sm">
+                        <Users className="min-w-4 min-h-4 mr-1 text-zinc-400" />
                         Total friends: <span className="font-bold ml-1">{result.totalFriends}</span>
                       </Badge>
-                      <Badge variant="outline" className="bg-black/30 text-white px-4 py-2 backdrop-blur-sm w-52 transition-all duration-500" style={{ borderColor: `${themeConfig.accent}80` }}>
-                        <Eye className="w-4 h-4 mr-2 transition-colors duration-500" style={{ color: themeConfig.text }} />
+                      <Badge variant="outline" className="bg-black/30 text-white px-4 py-2 backdrop-blur-sm w-52 text-sm transition-all duration-500" style={{ borderColor: `${themeConfig.accent}80` }}>
+                        <Eye className="min-w-4 min-h-4 mr-1 transition-colors duration-500" style={{ color: themeConfig.text }} />
                         With bans: <span className="font-bold ml-1 transition-colors duration-500" style={{ color: themeConfig.text }}>{result.bannedFriends.length}</span>
                       </Badge>
                     </div>
@@ -204,7 +204,7 @@ export default function Home() {
 
                 {result.bannedFriends.length > 0 ? (
                   <>
-                    <div className="mb-6 flex flex-col sm:flex-row gap-3">
+                    <div className="mb-6 flex flex-col sm:flex-row gap-3 md:px-12 lg:px-2">
                       <Input
                         type="text"
                         value={searchQuery}
@@ -225,7 +225,7 @@ export default function Home() {
                     )}
 
                     {filteredAndSortedFriends.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 min-h-[200px]">
+                      <div className="grid md:px-12 lg:px-2 grid-cols-1 lg:grid-cols-2 gap-3 min-h-[200px]">
                         {filteredAndSortedFriends.map((friend, index) => (
                           <div
                             key={friend.steamid}

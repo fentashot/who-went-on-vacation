@@ -92,9 +92,9 @@ export const getThemeConfig = (theme: Theme): ThemeConfig => {
     },
     white: {
       gradient: { from: 'rgba(200, 200, 200, 0.12)', via: 'rgba(150, 150, 150, 0.07)', to: 'rgba(100, 100, 100, 0.02)' },
-      gridColor: 'rgba(200, 200, 200, 0.3)',
-      accent: 'rgb(226, 232, 240)',
-      accentHover: 'rgb(203, 213, 225)',
+      gridColor: 'rgba(200, 200, 200, 0.1)',
+      accent: 'rgb(200, 200, 200, 0.5)',
+      accentHover: 'rgb(203, 213, 225, 0.7)',
       text: 'rgb(241, 245, 249)',
       ring: 'rgb(241, 245, 249)',
     },
