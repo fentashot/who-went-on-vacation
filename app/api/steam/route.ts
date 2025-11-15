@@ -223,6 +223,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         message: 'No friends found or profile is private',
         userProfile: userData,
+        totalFriends: 0,
+        allFriends: [],
         bannedFriends: [],
       });
     }
@@ -230,25 +232,11 @@ export async function POST(request: NextRequest) {
     // Get VAC ban status for all friends
     const banStatuses = await getVACBanStatus(friendIds);
 
-    // Filter friends with VAC bans
-    const bannedFriendIds = banStatuses
-      .filter(ban => ban.VACBanned || ban.NumberOfGameBans > 0)
-      .map(ban => ban.SteamId);
+    // Get player summaries for all friends
+    const allPlayers = await getPlayerSummaries(friendIds);
 
-    if (bannedFriendIds.length === 0) {
-      return NextResponse.json({
-        message: 'No friends with VAC bans found',
-        userProfile: userData,
-        totalFriends: friendIds.length,
-        bannedFriends: [],
-      });
-    }
-
-    // Get player summaries for banned friends
-    const bannedPlayers = await getPlayerSummaries(bannedFriendIds);
-
-    // Combine player info with ban info
-    const bannedFriends = bannedPlayers.map(player => {
+    // Combine player info with ban info for all friends
+    const allFriends = allPlayers.map(player => {
       const banInfo = banStatuses.find(ban => ban.SteamId === player.steamid);
       return {
         ...player,
@@ -256,10 +244,16 @@ export async function POST(request: NextRequest) {
       };
     });
 
+    // Filter friends with VAC bans
+    const bannedFriends = allFriends.filter(friend =>
+      friend.VACBanned || (friend.NumberOfGameBans && friend.NumberOfGameBans > 0)
+    );
+
     return NextResponse.json({
       message: `Found ${bannedFriends.length} friend(s) with VAC/Game bans`,
       userProfile: userData,
       totalFriends: friendIds.length,
+      allFriends,
       bannedFriends,
     });
 
