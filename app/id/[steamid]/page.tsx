@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Search } from 'lucide-react';
 import { BannedFriendCard } from '@/components/banned-friend-card';
 import { UserProfileCard } from '@/components/user-profile-card';
 import { ThemeSelector, type Theme, getThemeConfig, getStoredTheme } from '@/components/theme-selector';
@@ -51,20 +51,22 @@ export default function ProfilePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [showOnlyBanned, setShowOnlyBanned] = useState(true);
-  const [currentTheme, setCurrentTheme] = useState<Theme>('white');
+  const [currentTheme, setCurrentTheme] = useState<Theme | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [gridSize, setGridSize] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('gridSize');
-      return saved ? Number(saved) : 18;
-    }
-    return 18;
-  });
+  const [gridSize, setGridSize] = useState<number | null>(null);
 
   // Initialize theme and mount animation
   useEffect(() => {
-    setCurrentTheme(getStoredTheme());
-    const timer = setTimeout(() => setMounted(true), 300);
+    // Load theme and gridSize from localStorage
+    const loadSettings = () => {
+      setCurrentTheme(getStoredTheme());
+      const saved = localStorage.getItem('gridSize');
+      setGridSize(saved ? Number(saved) : 18);
+    };
+
+    requestAnimationFrame(loadSettings);
+
+    const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
@@ -119,7 +121,7 @@ export default function ProfilePage() {
     localStorage.setItem('gridSize', String(newSize));
   };
 
-  const themeConfig = getThemeConfig(currentTheme);
+  const themeConfig = getThemeConfig(currentTheme || 'white');
 
   const filteredAndSortedFriends = useMemo(() => {
     if (!result) return [];
@@ -168,8 +170,13 @@ export default function ProfilePage() {
     );
   };
 
+  // Show black screen until theme and gridSize load
+  if (!currentTheme || gridSize === null) {
+    return <div className="min-h-screen bg-black" />;
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white relative" style={{
+    <div className="min-h-screen bg-black text-white relative" suppressHydrationWarning style={{
       '--theme-gradient-from': themeConfig.gradient.from,
       '--theme-gradient-via': themeConfig.gradient.via,
       '--theme-gradient-to': themeConfig.gradient.to,
@@ -180,8 +187,9 @@ export default function ProfilePage() {
         <div
           className={`absolute inset-0 background-grid transition-opacity duration-800 ${mounted ? 'opacity-100' : 'opacity-0'}`}
           style={{ backgroundSize: `${gridSize}px ${gridSize}px` }}
+          suppressHydrationWarning
         />
-        <div className={`absolute inset-0 background-gradient transition-opacity duration-800 ${mounted ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute inset-0 background-gradient transition-opacity duration-800 ${mounted ? 'opacity-100' : 'opacity-0'}`} suppressHydrationWarning />
       </div>
 
       <div className="relative min-h-screen flex flex-col items-center py-10">
@@ -210,6 +218,7 @@ export default function ProfilePage() {
               themeConfig={themeConfig}
               showHeader={false}
               showExamples={false}
+              placeholder={steamid}
             />
           </div>
 
@@ -248,13 +257,16 @@ export default function ProfilePage() {
                 {(showOnlyBanned ? result.bannedFriends.length > 0 : result.allFriends.length > 0) ? (
                   <>
                     <div className="mb-6 flex flex-col sm:flex-row gap-3 md:px-12 lg:px-2">
-                      <Input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name..."
-                        className="flex-1 h-10 bg-zinc-900/30 border-zinc-700/50 text-white placeholder:text-gray-500 backdrop-blur-md rounded-lg"
-                      />
+                      <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        <Input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search by name..."
+                          className="h-10 bg-zinc-900/30 border-zinc-700/50 text-white placeholder:text-gray-500 backdrop-blur-md rounded-lg pl-10"
+                        />
+                      </div>
                       <div className="flex gap-2">
                         <SortButton order="newest" icon={ArrowUp} label="Newest" />
                         <SortButton order="oldest" icon={ArrowDown} label="Oldest" />

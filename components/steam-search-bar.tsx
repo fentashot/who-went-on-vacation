@@ -13,6 +13,7 @@ interface SteamSearchBarProps {
   showHeader?: boolean;
   showExamples?: boolean;
   headerTransition?: boolean;
+  placeholder?: string;
 }
 
 const BADGE_EXAMPLES = ['76561198012345678', 'https://steamcommunity.com/id/username', 'username'];
@@ -60,7 +61,8 @@ export function SteamSearchBar({
   themeConfig,
   showHeader = true,
   showExamples = true,
-  headerTransition = false
+  headerTransition = false,
+  placeholder
 }: SteamSearchBarProps) {
   const [profileUrl, setProfileUrl] = useState('');
 
@@ -103,7 +105,7 @@ export function SteamSearchBar({
               type="text"
               value={profileUrl}
               onChange={(e) => setProfileUrl(e.target.value)}
-              placeholder="Enter Steam profile URL or ID..."
+              placeholder={placeholder || "Enter Steam profile URL or ID..."}
               className="w-full border-r-0 h-14 bg-zinc-900/30 border-2 px-4 focus:ring-0 focus:outline-none border-zinc-700/50 text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500"
               disabled={loading}
               required

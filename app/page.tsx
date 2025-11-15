@@ -6,28 +6,38 @@ import { SteamSearchBar } from '@/components/steam-search-bar';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  const [currentTheme, setCurrentTheme] = useState<Theme>(() => {
-    if (typeof window !== 'undefined') {
-      return getStoredTheme();
-    }
-    return 'white';
-  });
+  // Start with null to avoid flash of wrong theme during SSR
+  const [currentTheme, setCurrentTheme] = useState<Theme | null>(null);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 300);
+    // Load theme on client mount with minimal delay
+    const loadTheme = () => {
+      const theme = getStoredTheme();
+      setCurrentTheme(theme);
+    };
+
+    // Use requestAnimationFrame to avoid sync setState warning
+    requestAnimationFrame(loadTheme);
+
+    const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  const themeConfig = getThemeConfig(currentTheme);
+  const themeConfig = getThemeConfig(currentTheme || 'white');
 
   const handleSearch = (profileUrl: string) => {
     router.push(`/id/${profileUrl}`);
   };
 
+  // Show black screen until theme loads to prevent white flash
+  if (!currentTheme) {
+    return <div className="min-h-screen bg-black" />;
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white relative" style={{
+    <div className="min-h-screen bg-black text-white relative" suppressHydrationWarning style={{
       '--theme-gradient-from': themeConfig.gradient.from,
       '--theme-gradient-via': themeConfig.gradient.via,
       '--theme-gradient-to': themeConfig.gradient.to,
@@ -35,8 +45,8 @@ export default function Home() {
     } as React.CSSProperties}>
 
       <div className="fixed inset-0 bg-black pointer-events-none">
-        <div className={`absolute inset-0 background-grid transition-opacity duration-1200 ${mounted ? 'opacity-100' : 'opacity-0'}`} />
-        <div className={`absolute inset-0 background-gradient transition-opacity duration-1200 ${mounted ? 'opacity-100' : 'opacity-0'}`} />
+        <div className={`absolute inset-0 background-grid transition-opacity duration-1200 ${mounted ? 'opacity-100' : 'opacity-0'}`} suppressHydrationWarning />
+        <div className={`absolute inset-0 background-gradient transition-opacity duration-1200 ${mounted ? 'opacity-100' : 'opacity-0'}`} suppressHydrationWarning />
       </div>
 
       <div className="relative min-h-screen flex flex-col items-center">

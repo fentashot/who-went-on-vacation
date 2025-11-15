@@ -1,8 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { BarChart3 } from 'lucide-react';
 
@@ -39,61 +38,68 @@ const SteamIcon = ({ className }: { className?: string }) => (
 );
 
 export function BannedFriendCard({ friend, themeConfig }: { friend: BannedFriend; themeConfig?: ThemeConfig }) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/id/${friend.steamid}`);
+  };
+
   return (
-    <Link href={`/id/${friend.steamid}`} className="block h-full">
-      <div className="bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700 transition-colors backdrop-blur cursor-pointer rounded-lg h-full">
-        <div className="flex items-start gap-4 p-4 pb-5 h-full">
-          <Image
-            src={friend.avatarmedium}
-            alt={friend.personaname}
-            width={64}
-            height={64}
-            className="rounded-lg shrink-0 mt-2"
-          />
-          <div className="flex-1 min-w-0 flex flex-col ">
-            <div className="flex items-center justify-between gap-2">
-              <h3 className="text-xl font-bold text-white truncate">{friend.personaname}</h3>
-              <div className="flex gap-1 shrink-0">
-                <a
-                  href={friend.profileurl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-slate-500 hover:text-slate-400 inline-flex items-center transition-colors p-2 rounded-md hover:bg-zinc-800/50"
-                  title="Steam Profile"
-                >
-                  <SteamIcon className="w-5 h-5" />
-                </a>
-                <a
-                  href={`https://csstats.gg/player/${friend.steamid}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center transition-colors p-2 rounded-md hover:bg-zinc-800/50"
-                  style={{ color: themeConfig?.text || '#c084fc' }}
-                  title="CS Stats"
-                >
-                  <BarChart3 className="w-5 h-5" />
-                </a>
-              </div>
+    <div
+      onClick={handleCardClick}
+      className="bg-zinc-900/30 border border-zinc-800/50 hover:border-zinc-700 transition-colors backdrop-blur cursor-pointer rounded-lg h-full"
+    >
+      <div className="flex items-start gap-4 p-4 pb-5 h-full">
+        <Image
+          src={friend.avatarmedium}
+          alt={friend.personaname}
+          width={64}
+          height={64}
+          className="rounded-lg shrink-0 mt-2"
+        />
+        <div className="flex-1 min-w-0 flex flex-col ">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-xl font-bold text-white truncate">{friend.personaname}</h3>
+            <div className="flex gap-1 shrink-0">
+              <a
+                href={friend.profileurl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-slate-500 hover:text-slate-400 inline-flex items-center transition-colors p-2 rounded-md hover:bg-zinc-800/50"
+                title="Steam Profile"
+              >
+                <SteamIcon className="w-5 h-5" />
+              </a>
+              <a
+                href={`https://csstats.gg/player/${friend.steamid}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center transition-colors p-2 rounded-md hover:bg-zinc-800/50"
+                style={{ color: themeConfig?.text || '#c084fc' }}
+                title="CS Stats"
+              >
+                <BarChart3 className="w-5 h-5" />
+              </a>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {friend.VACBanned && <Badge className="bg-red-600 hover:bg-red-700 text-white">VAC</Badge>}
-              {friend.NumberOfGameBans > 0 && <Badge className="bg-orange-600 hover:bg-orange-700 text-white">GAME BAN</Badge>}
-              {friend.CommunityBanned && <Badge className="bg-yellow-600 hover:bg-yellow-700 text-white">COMMUNITY BAN</Badge>}
-              {friend.EconomyBan !== 'none' && <Badge className="bg-purple-600 hover:bg-purple-700 text-white">TRADE BAN</Badge>}
-              {!friend.VACBanned && !friend.NumberOfGameBans && !friend.CommunityBanned && friend.EconomyBan === 'none' && (
-                <Badge variant="outline" className="bg-green-900/20 text-green-400 border-green-800">
-                  ✓ CLEAN
-                </Badge>
-              )}
-            </div>
-            {friend.DaysSinceLastBan > 0 && (
-              <p className="text-sm text-gray-400 mt-2">Last ban {friend.DaysSinceLastBan} days ago</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {friend.VACBanned && <Badge className="bg-red-600 hover:bg-red-700 text-white">VAC</Badge>}
+            {friend.NumberOfGameBans > 0 && <Badge className="bg-orange-600 hover:bg-orange-700 text-white">GAME BAN</Badge>}
+            {friend.CommunityBanned && <Badge className="bg-yellow-600 hover:bg-yellow-700 text-white">COMMUNITY BAN</Badge>}
+            {friend.EconomyBan !== 'none' && <Badge className="bg-purple-600 hover:bg-purple-700 text-white">TRADE BAN</Badge>}
+            {!friend.VACBanned && !friend.NumberOfGameBans && !friend.CommunityBanned && friend.EconomyBan === 'none' && (
+              <Badge variant="outline" className="bg-green-900/20 text-green-400 border-green-800">
+                ✓ CLEAN
+              </Badge>
             )}
           </div>
+          {friend.DaysSinceLastBan > 0 && (
+            <p className="text-sm text-gray-400 mt-2">Last ban {friend.DaysSinceLastBan} days ago</p>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
