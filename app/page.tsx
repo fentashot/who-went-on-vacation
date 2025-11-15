@@ -48,6 +48,7 @@ export default function Home() {
   const [currentTheme, setCurrentTheme] = useState<Theme>('white');
   const [mounted, setMounted] = useState(false);
   const [firstSearch, setFirstSearch] = useState(false);
+  const [cache, setCache] = useState<Map<string, ApiResponse>>(new Map());
 
   useEffect(() => {
     setCurrentTheme(getStoredTheme());
@@ -66,6 +67,18 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Normalize profile URL for cache key
+    const cacheKey = profileUrl.trim().toLowerCase();
+
+    // Check cache first
+    if (cache.has(cacheKey)) {
+      setResult(cache.get(cacheKey)!);
+      setError(null);
+      if (!firstSearch) setFirstSearch(true);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
@@ -80,6 +93,8 @@ export default function Home() {
       const data = await res.json();
       if (res.ok) {
         setResult(data);
+        // Cache the result
+        setCache(new Map(cache.set(cacheKey, data)));
       } else {
         setError(data.error || 'An error occurred');
       }
