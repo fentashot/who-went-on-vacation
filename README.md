@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Steam VAC Ban Checker
 
-## Getting Started
+Aplikacja Next.js do sprawdzania znajomych na Steamie z banami VAC.
 
-First, run the development server:
+## Funkcjonalności
+
+- Wprowadź link do profilu Steam
+- Wyświetla wszystkich znajomych z:
+  - VAC Ban
+  - Game Ban
+  - Community Ban
+  - Trade Ban
+- Pokazuje szczegóły każdego bana (liczba banów, dni od ostatniego bana)
+- Wyświetla awatary i linki do profili
+
+## Wymagania
+
+- Node.js 18+
+- Klucz Steam Web API
+
+## Instalacja
+
+1. Sklonuj repozytorium:
+
+```bash
+git clone <your-repo-url>
+cd steam-info-app
+```
+
+2. Zainstaluj zależności:
+
+```bash
+npm install
+```
+
+3. Uzyskaj klucz Steam Web API:
+
+   - Przejdź na https://steamcommunity.com/dev/apikey
+   - Zaloguj się na swoje konto Steam
+   - Wypełnij formularz i uzyskaj swój klucz API
+
+4. Utwórz plik `.env.local`:
+
+```bash
+cp .env.example .env.local
+```
+
+5. Edytuj `.env.local` i dodaj swój klucz API:
+
+```
+STEAM_API_KEY=your_actual_api_key_here
+```
+
+## Uruchomienie
+
+Uruchom serwer deweloperski:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otwórz [http://localhost:3000](http://localhost:3000) w przeglądarce.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Użycie
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Wklej link do profilu Steam w jednym z formatów:
 
-## Learn More
+   - `https://steamcommunity.com/id/username`
+   - `https://steamcommunity.com/profiles/76561198XXXXXXXXX`
+   - Samo ID Steam (17 cyfr)
 
-To learn more about Next.js, take a look at the following resources:
+2. Kliknij "Check VAC Bans"
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Aplikacja wyświetli:
+   - Całkowitą liczbę znajomych
+   - Liczbę znajomych z banami
+   - Szczegółową listę zbanowanych znajomych z informacjami o banach
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Uwaga:** Profil użytkownika musi być publiczny, aby aplikacja mogła pobrać listę znajomych.
 
-## Deploy on Vercel
+## API Endpoints
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### POST /api/steam
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Sprawdza VAC bany znajomych użytkownika Steam.
+
+**Request Body:**
+
+```json
+{
+  "profileUrl": "https://steamcommunity.com/id/username"
+}
+```
+
+**Response:**
+
+```json
+{
+  "message": "Found X friend(s) with VAC/Game bans",
+  "totalFriends": 100,
+  "bannedFriends": [
+    {
+      "steamid": "76561198...",
+      "personaname": "Username",
+      "profileurl": "https://steamcommunity.com/profiles/...",
+      "avatar": "...",
+      "avatarmedium": "...",
+      "avatarfull": "...",
+      "VACBanned": true,
+      "NumberOfVACBans": 1,
+      "NumberOfGameBans": 0,
+      "DaysSinceLastBan": 365,
+      "CommunityBanned": false,
+      "EconomyBan": "none"
+    }
+  ]
+}
+```
+
+## Technologie
+
+- [Next.js 16](https://nextjs.org/)
+- [React 19](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Steam Web API](https://steamcommunity.com/dev)
+
+## Prywatność
+
+- Wszystkie zapytania są przetwarzane po stronie serwera
+- Klucz API nie jest ujawniany klientowi
+- Nie przechowujemy żadnych danych użytkownika
+
+## Licencja
+
+MIT
