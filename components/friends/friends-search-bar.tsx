@@ -1,0 +1,24 @@
+"use client";
+
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+
+interface FriendsSearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export function FriendsSearchBar({ value, onChange }: FriendsSearchBarProps) {
+  return (
+    <div className="relative flex-1">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+      <Input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search by name..."
+        className="h-10 bg-zinc-900/30 border-zinc-700/50 text-white placeholder:text-gray-500 backdrop-blur-md rounded-lg pl-10"
+      />
+    </div>
+  );
+}

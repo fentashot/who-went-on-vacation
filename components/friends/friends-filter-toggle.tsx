@@ -1,17 +1,7 @@
-'use client';
+"use client";
 
-import { Eye, Users } from 'lucide-react';
-
-interface ThemeConfig {
-  text: string;
-  accent: string;
-  gradient: {
-    from: string;
-    via: string;
-    to: string;
-  };
-  gridColor: string;
-}
+import { Eye, Users } from "lucide-react";
+import { type ThemeConfig } from "@/contexts/theme-context";
 
 interface FriendsFilterToggleProps {
   showOnlyBanned: boolean;
@@ -22,15 +12,15 @@ interface FriendsFilterToggleProps {
 }
 
 const INACTIVE_STYLES = {
-  backgroundColor: '#00000010',
-  borderColor: '#3f3f46',
-  color: '#a1a1aa',
+  backgroundColor: "#00000010",
+  borderColor: "#3f3f46",
+  color: "#a1a1aa",
 };
 
 const HOVER_STYLES = {
-  backgroundColor: '#00000020',
-  color: '#d4d4d8',
-  borderColor: '#52525b',
+  backgroundColor: "#00000020",
+  color: "#d4d4d8",
+  borderColor: "#52525b",
 };
 
 export function FriendsFilterToggle({
@@ -40,13 +30,19 @@ export function FriendsFilterToggle({
   bannedCount,
   themeConfig,
 }: FriendsFilterToggleProps) {
-  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>, isActive: boolean) => {
+  const handleMouseEnter = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    isActive: boolean
+  ) => {
     if (!isActive) {
       Object.assign(e.currentTarget.style, HOVER_STYLES);
     }
   };
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>, isActive: boolean) => {
+  const handleMouseLeave = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    isActive: boolean
+  ) => {
     if (!isActive) {
       Object.assign(e.currentTarget.style, INACTIVE_STYLES);
     }
@@ -60,7 +56,11 @@ export function FriendsFilterToggle({
         className="px-4 py-2 backdrop-blur w-52 text-sm transition-all duration-300 border rounded-lg flex items-center justify-center"
         style={
           !showOnlyBanned
-            ? { backgroundColor: '#52525b80', borderColor: '#52525b', color: 'white' }
+            ? {
+              backgroundColor: "#52525b80",
+              borderColor: "#52525b",
+              color: "white",
+            }
             : INACTIVE_STYLES
         }
         onMouseEnter={(e) => handleMouseEnter(e, !showOnlyBanned)}

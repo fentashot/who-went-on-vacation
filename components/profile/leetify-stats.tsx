@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Loader2 } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, Loader2 } from "lucide-react";
 
 interface LeetifyStatsProps {
   steamId: string;
@@ -35,10 +35,10 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
     const fetchLeetifyStats = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/cswatch', {
-          method: 'POST',
+        const response = await fetch("/api/cswatch", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ steamId }),
         });
@@ -46,12 +46,12 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
         const data = await response.json();
 
         if (!response.ok) {
-          setError(data.error || 'Failed to fetch Leetify stats');
+          setError(data.error || "Failed to fetch Leetify stats");
         } else {
           setStats(data.stats);
         }
       } catch (err) {
-        setError('Failed to connect to server');
+        setError("Failed to connect to server");
       } finally {
         setLoading(false);
       }
@@ -64,26 +64,26 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
 
   // Mock data jako fallback
   const mockStats: LeetifyData = {
-    rating: '0',
+    rating: "0",
     matches: 154,
     faceit: 1,
     premier: 6,
     competitive: 23,
-    kd: 1.70,
+    kd: 1.7,
     headAccuracy: 21.0,
     winrate: 57,
     killsPerRound: 1.06,
     spottedAccuracy: 38.3,
-    timeToDamage: '553ms',
+    timeToDamage: "553ms",
     sprayAccuracy: 41.9,
     skills: [
-      { name: 'Aim', value: 91, color: 'bg-emerald-500' },
-      { name: 'Utility', value: 73, color: 'bg-emerald-500' },
-      { name: 'Positioning', value: 69, color: 'bg-emerald-500' },
-      { name: 'Opening Duels', value: 4, color: 'bg-emerald-500' },
-      { name: 'Clutching', value: 15, color: 'bg-emerald-500' },
+      { name: "Aim", value: 91, color: "bg-emerald-500" },
+      { name: "Utility", value: 73, color: "bg-emerald-500" },
+      { name: "Positioning", value: 69, color: "bg-emerald-500" },
+      { name: "Opening Duels", value: 4, color: "bg-emerald-500" },
+      { name: "Clutching", value: 15, color: "bg-emerald-500" },
     ],
-    winHistory: ['W', 'L', 'W', 'W', 'L', 'W', 'W', 'W', 'L', 'L'],
+    winHistory: ["W", "L", "W", "W", "L", "W", "W", "W", "L", "L"],
   };
 
   const displayStats = stats || mockStats;
@@ -109,8 +109,12 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Leetify Statistics</h3>
-              <p className="text-xs text-gray-400">Based on the last 30 Matches</p>
+              <h3 className="text-lg font-bold text-white">
+                Leetify Statistics
+              </h3>
+              <p className="text-xs text-gray-400">
+                Based on the last 30 Matches
+              </p>
             </div>
           </div>
           <a
@@ -125,13 +129,22 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
 
         {/* Match Types */}
         <div className="flex gap-2 mb-6">
-          <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white">
+          <Badge
+            variant="outline"
+            className="bg-black/10 border-zinc-700/50 text-white"
+          >
             FACEIT: {displayStats.faceit}
           </Badge>
-          <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white">
+          <Badge
+            variant="outline"
+            className="bg-black/10 border-zinc-700/50 text-white"
+          >
             Premier: {displayStats.premier}
           </Badge>
-          <Badge variant="outline" className="bg-black/10 border-zinc-700/50 text-white">
+          <Badge
+            variant="outline"
+            className="bg-black/10 border-zinc-700/50 text-white"
+          >
             Competitive: {displayStats.competitive}
           </Badge>
         </div>
@@ -143,7 +156,9 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
             <div className="flex items-center gap-4 mb-6">
               <div className="relative">
                 <div className="w-20 h-20 rounded-full border-4 border-emerald-500 flex items-center justify-center">
-                  <span className="text-xl font-bold text-emerald-400">{displayStats.rating}</span>
+                  <span className="text-xl font-bold text-emerald-400">
+                    {displayStats.rating}
+                  </span>
                 </div>
               </div>
               <div>
@@ -157,7 +172,9 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
                 <div key={skill.name}>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm text-gray-300">{skill.name}</span>
-                    <span className="text-sm font-semibold text-white">{skill.value}</span>
+                    <span className="text-sm font-semibold text-white">
+                      {skill.value}
+                    </span>
                   </div>
                   <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
                     <div
@@ -176,15 +193,21 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">K/D</p>
-                <p className="text-2xl font-bold text-white">{displayStats.kd}</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.kd}
+                </p>
               </div>
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Head Accuracy</p>
-                <p className="text-2xl font-bold text-white">{displayStats.headAccuracy}%</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.headAccuracy}%
+                </p>
               </div>
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Winrate</p>
-                <p className="text-2xl font-bold text-white">{displayStats.winrate}%</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.winrate}%
+                </p>
               </div>
             </div>
 
@@ -192,11 +215,15 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Kills per Round</p>
-                <p className="text-2xl font-bold text-white">{displayStats.killsPerRound}</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.killsPerRound}
+                </p>
               </div>
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Spotted Accuracy *</p>
-                <p className="text-2xl font-bold text-white">{displayStats.spottedAccuracy}%</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.spottedAccuracy}%
+                </p>
               </div>
             </div>
 
@@ -204,11 +231,15 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Time to Damage</p>
-                <p className="text-2xl font-bold text-white">{displayStats.timeToDamage}</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.timeToDamage}
+                </p>
               </div>
               <div className="bg-zinc-800/50 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Spray Accuracy</p>
-                <p className="text-2xl font-bold text-white">{displayStats.sprayAccuracy}%</p>
+                <p className="text-2xl font-bold text-white">
+                  {displayStats.sprayAccuracy}%
+                </p>
               </div>
             </div>
 
@@ -219,8 +250,11 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
                 {displayStats.winHistory.map((result, index) => (
                   <div
                     key={index}
-                    className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${result === 'W' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
-                      }`}
+                    className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
+                      result === "W"
+                        ? "bg-emerald-500 text-white"
+                        : "bg-red-500 text-white"
+                    }`}
                   >
                     {result}
                   </div>
@@ -231,7 +265,9 @@ export function LeetifyStats({ steamId }: LeetifyStatsProps) {
             {/* Total Matches */}
             <div className="bg-zinc-800/50 rounded-lg p-3">
               <p className="text-xs text-gray-400 mb-1">Total Matches</p>
-              <p className="text-2xl font-bold text-white">{displayStats.matches}</p>
+              <p className="text-2xl font-bold text-white">
+                {displayStats.matches}
+              </p>
             </div>
           </div>
         </div>
