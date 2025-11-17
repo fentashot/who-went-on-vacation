@@ -2,26 +2,29 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUp, ArrowDown } from "lucide-react";
+
+// UI Components
+import { Card, CardContent } from "@/components/ui/card";
 import { UserProfileCard } from "@/components/profile/user-profile-card";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { SteamSearchBar } from "@/components/search/steam-search-bar";
 import { FriendsFilterToggle } from "@/components/friends/friends-filter-toggle";
 import { SortButton } from "@/components/friends/sort-button";
 import { FriendsSearchBar } from "@/components/friends/friends-search-bar";
-import { GridSizeSlider } from "@/components/layout/grid-size-slider";
-import { ErrorMessage } from "@/components/shared/error-message";
 import { FriendsList } from "@/components/friends/friends-list";
 import { ViewToggle } from "@/components/layout/view-toggle";
-import { useSteamProfile } from "@/hooks/use-steam-profile";
-import { type SortOrder } from "@/types/steam";
-import { useTheme } from "@/contexts/theme-context";
+import { GridSizeSlider } from "@/components/layout/grid-size-slider";
+import { ThemeSelector } from "@/components/layout/theme-selector";
 import { ThemeBackground } from "@/components/layout/theme-background";
 
-import { filterAndSortFriends } from "@/lib/utils";
+// Contexts & Types
+import { useProfile } from "@/contexts/profile-context";
+import { useTheme } from "@/contexts/theme-context";
+import { type SortOrder } from "@/types/steam";
 
-import { ThemeSelector } from "@/components/layout/theme-selector";
+// Utils
+import { filterAndSortFriends } from "@/lib/utils";
 
 interface PageClientProps {
   steamid: string;
@@ -30,70 +33,68 @@ interface PageClientProps {
 export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
   const { themeConfig, gridSize } = useTheme();
+  const { currentProfile, loading, error, fetchAndSetProfile } = useProfile();
 
-  // Use custom hook for Steam profile data
-  const { loading, result, error, fetchProfile } = useSteamProfile();
-
-  // State
+  // UI State
+  const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const [showOnlyBanned, setShowOnlyBanned] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
-  // Mount animation
+  // Mount animation effect
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch profile on steamid change
+  // Fetch profile on mount if needed
   useEffect(() => {
-    if (steamid) {
-      fetchProfile(steamid);
+    if (steamid && !currentProfile && !error) {
+      fetchAndSetProfile(steamid);
     }
-  }, [steamid, fetchProfile]);
+  }, [steamid, currentProfile, error, fetchAndSetProfile]);
 
-  const handleSearch = (profileUrl: string) => {
-    router.push(`/id/${profileUrl}`);
+  // Handlers
+  const handleSearch = async (profileUrl: string) => {
+    const success = await fetchAndSetProfile(profileUrl);
+    if (success) {
+      router.push(`/id/${profileUrl}`);
+    }
   };
 
-  const filteredAndSortedFriends = useMemo(() => {
-    if (!result) return [];
+  // Computed values
+  const friendsToDisplay = useMemo(() => {
+    return showOnlyBanned
+      ? currentProfile?.bannedFriends ?? []
+      : currentProfile?.allFriends ?? [];
+  }, [showOnlyBanned, currentProfile]);
 
-    const friendsToShow = showOnlyBanned
-      ? result.bannedFriends
-      : result.allFriends;
-    if (!friendsToShow) return [];
+  const filteredAndSortedFriends = useMemo(
+    () => filterAndSortFriends(friendsToDisplay, searchQuery, sortOrder),
+    [friendsToDisplay, searchQuery, sortOrder]
+  );
 
-    return filterAndSortFriends(friendsToShow, searchQuery, sortOrder);
-  }, [result, showOnlyBanned, searchQuery, sortOrder]);
 
   return (
-    <div
-      className="min-h-screen bg-black text-white relative"
-      suppressHydrationWarning
-    >
-      <ThemeBackground
-        mounted={mounted}
-        themeConfig={themeConfig}
-        gridSize={gridSize}
-      />
+    <div className="min-h-screen bg-black text-white relative" suppressHydrationWarning>
+      <ThemeBackground mounted={mounted} themeConfig={themeConfig} gridSize={gridSize} />
 
-      {/* Page */}
       <div className="relative min-h-screen flex flex-col items-center py-10">
-        {/* Controls */}
+        {/* Top Controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
           <ViewToggle />
           <GridSizeSlider />
           <ThemeSelector />
         </div>
-        {/* Content */}
+
+        {/* Main Content */}
         <div className="w-full max-w-7xl px-4 mt-8">
           {/* Search Bar */}
           <div className="mb-8">
             <SteamSearchBar
               onSearch={handleSearch}
               loading={loading}
+              error={error}
               themeConfig={themeConfig}
               showHeader={false}
               showExamples={false}
@@ -101,50 +102,41 @@ export function PageClient({ steamid }: PageClientProps) {
             />
           </div>
 
-          {/* Error Message */}
-          {error && !loading && <ErrorMessage message={error} themeConfig={themeConfig} />}
-
           {/* Loading State */}
-          {loading && !result && !error && <LoadingSkeleton />}
+          {loading && !currentProfile && <LoadingSkeleton />}
 
-          {/* Results */}
-          {result && !error && (
+          {/* Profile Results */}
+          {currentProfile && (
             <div className="w-full space-y-14">
-              {/* User Profile */}
-              {result.userProfile && (
-                <div>
-                  <UserProfileCard profile={result.userProfile} />
-                </div>
+              {/* User Profile Card */}
+              {currentProfile.userProfile && (
+                <UserProfileCard profile={currentProfile.userProfile} />
               )}
 
               {/* Friends Section */}
               <div className="space-y-10 px-2">
+                {/* Section Header */}
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-white mb-4">
-                    {result.message}
+                    {currentProfile.message}
                   </h2>
-                  {result.totalFriends !== undefined && (
+                  {currentProfile.totalFriends !== undefined && (
                     <FriendsFilterToggle
                       showOnlyBanned={showOnlyBanned}
                       onToggle={setShowOnlyBanned}
-                      totalFriends={result.totalFriends}
-                      bannedCount={result.bannedFriends.length}
+                      totalFriends={currentProfile.totalFriends}
+                      bannedCount={currentProfile.bannedFriends.length}
                       themeConfig={themeConfig}
                     />
                   )}
                 </div>
 
-                {(
-                  showOnlyBanned
-                    ? result.bannedFriends.length > 0
-                    : result.allFriends.length > 0
-                ) ? (
+                {/* Friends Content */}
+                {friendsToDisplay.length > 0 ? (
                   <>
+                    {/* Search & Sort Controls */}
                     <div className="mb-6 flex flex-col sm:flex-row gap-3 lg:px-2">
-                      <FriendsSearchBar
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                      />
+                      <FriendsSearchBar value={searchQuery} onChange={setSearchQuery} />
                       <div className="flex gap-2">
                         <SortButton
                           order="newest"
@@ -165,31 +157,32 @@ export function PageClient({ steamid }: PageClientProps) {
                       </div>
                     </div>
 
+                    {/* Search Results Count */}
                     {searchQuery && (
                       <p className="text-sm text-gray-400 mb-3">
-                        Showing {filteredAndSortedFriends.length} of{" "}
-                        {showOnlyBanned
-                          ? result.bannedFriends.length
-                          : result.allFriends.length}{" "}
+                        Showing {filteredAndSortedFriends.length} of {friendsToDisplay.length}{" "}
                         {showOnlyBanned ? "banned friends" : "friends"}
                       </p>
                     )}
 
+                    {/* Friends List */}
                     <FriendsList
                       friends={filteredAndSortedFriends}
                       searchQuery={searchQuery}
                       themeConfig={themeConfig}
                     />
                   </>
-                ) : result.totalFriends !== undefined ? (
-                  <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
-                    <CardContent className="p-12 text-center">
-                      <p className="text-gray-400 text-lg">
-                        🎉 None of your friends have VAC or game bans!
-                      </p>
-                    </CardContent>
-                  </Card>
-                ) : null}
+                ) : (
+                  currentProfile.totalFriends !== undefined && (
+                    <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
+                      <CardContent className="p-12 text-center">
+                        <p className="text-gray-400 text-lg">
+                          🎉 None of your friends have VAC or game bans!
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )
+                )}
               </div>
             </div>
           )}

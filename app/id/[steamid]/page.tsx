@@ -4,6 +4,7 @@ import {
   getCompactViewFromCookies,
 } from "@/lib/theme-actions";
 import { ThemeProvider } from "@/contexts/theme-context";
+import { ProfileProvider } from "@/contexts/profile-context";
 import { PageClient } from "@/app/id/[steamid]/page-client";
 
 interface ProfilePageProps {
@@ -22,7 +23,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       initialGridSize={gridSize}
       initialCompactView={compactView}
     >
-      <PageClient steamid={steamid} />
+      <ProfileProvider>
+        <PageClient steamid={steamid} />
+      </ProfileProvider>
     </ThemeProvider>
   );
 }

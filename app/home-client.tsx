@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { SteamSearchBar } from "@/components/search/steam-search-bar";
 import { ThemeBackground } from "@/components/layout/theme-background";
 import { useTheme } from "@/contexts/theme-context";
+import { useProfile } from "@/contexts/profile-context";
 
 export function HomeClient() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { themeConfig } = useTheme();
+  const { loading, error, fetchAndSetProfile, clearError } = useProfile();
 
   // Mount animation
   useEffect(() => {
@@ -17,8 +19,12 @@ export function HomeClient() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSearch = (profileUrl: string) => {
-    router.push(`/id/${profileUrl}`);
+  const handleSearch = async (profileUrl: string) => {
+    clearError();
+    const success = await fetchAndSetProfile(profileUrl);
+    if (success) {
+      router.push(`/id/${profileUrl}`);
+    }
   };
 
   return (
@@ -29,7 +35,8 @@ export function HomeClient() {
         <div className="w-full flex flex-col items-center mt-[30vh]">
           <SteamSearchBar
             onSearch={handleSearch}
-            loading={false}
+            loading={loading}
+            error={error}
             themeConfig={themeConfig}
             showExamples={true}
           />

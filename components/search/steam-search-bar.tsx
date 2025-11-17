@@ -13,11 +13,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage,
 } from "@/components/ui/form";
 
 interface SteamSearchBarProps {
-  onSearch: (profileUrl: string) => void;
+  onSearch: (profileUrl: string) => void | Promise<void>;
   loading?: boolean;
   error?: string | null;
   themeConfig: ThemeConfig;
@@ -179,10 +178,13 @@ export function SteamSearchBar({
                         placeholder={
                           ".../id/" + placeholder || "Enter Steam profile URL or ID..."
                         }
-                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-10 pr-8 focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 ${displayError
-                            ? "border-red-500/70 focus:border-red-500"
-                            : "border-zinc-700/50 focus:border-zinc-600/50"
+                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-10 pr-8 focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 autofill:bg-zinc-900/30 autofill:text-white ${displayError
+                          ? "border-red-500/70 focus:border-red-500"
+                          : "border-zinc-700/50 focus:border-zinc-600/50"
                           }`}
+                        style={{
+                          colorScheme: "dark",
+                        }}
                         disabled={loading}
                         {...field}
                       />

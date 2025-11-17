@@ -1,4 +1,4 @@
-export interface BannedFriend {
+export interface FriendProfile {
   steamid: string;
   personaname: string;
   profileurl: string;
@@ -16,9 +16,9 @@ export interface BannedFriend {
 export interface ApiResponse {
   message: string;
   totalFriends?: number;
-  allFriends: BannedFriend[];
-  bannedFriends: BannedFriend[];
-  userProfile?: BannedFriend;
+  allFriends: FriendProfile[];
+  bannedFriends: FriendProfile[];
+  userProfile?: FriendProfile;
 }
 
 export type SortOrder = 'newest' | 'oldest';

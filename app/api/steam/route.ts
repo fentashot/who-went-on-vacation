@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 
 const STEAM_API_KEY = process.env.STEAM_API_KEY;
+
+// Cache configuration
+const CACHE_REVALIDATE_TIME = 3600; // 1 hour in seconds
 
 interface SteamPlayer {
   steamid: string;
@@ -62,109 +66,157 @@ function extractSteamId(input: string): string | null {
   return null;
 }
 
-// Resolve vanity URL to Steam ID
-async function resolveVanityUrl(vanityUrl: string): Promise<string | null> {
-  try {
-    const response = await fetch(
-      `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${STEAM_API_KEY}&vanityurl=${vanityUrl}`
-    );
+// Resolve vanity URL to Steam ID (cached)
+const getCachedVanityUrl = unstable_cache(
+  async (vanityUrl: string) => {
+    try {
+      const response = await fetch(
+        `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${STEAM_API_KEY}&vanityurl=${vanityUrl}`,
+        { next: { revalidate: CACHE_REVALIDATE_TIME } }
+      );
 
-    if (!response.ok) {
-      console.error('Steam API error:', response.status, response.statusText);
+      if (!response.ok) {
+        console.error('Steam API error:', response.status, response.statusText);
+        return null;
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('Steam API returned non-JSON response. Check if your API key is valid.');
+        throw new Error('Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local');
+      }
+
+      const data = await response.json();
+
+      if (data.response?.success === 1) {
+        return data.response.steamid;
+      }
       return null;
+    } catch (error) {
+      console.error('Error resolving vanity URL:', error);
+      throw error;
     }
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('Steam API returned non-JSON response. Check if your API key is valid.');
-      throw new Error('Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local');
-    }
-
-    const data = await response.json();
-
-    if (data.response?.success === 1) {
-      return data.response.steamid;
-    }
-    return null;
-  } catch (error) {
-    console.error('Error resolving vanity URL:', error);
-    throw error;
+  },
+  ['vanity-url'],
+  {
+    revalidate: CACHE_REVALIDATE_TIME,
+    tags: ['steam-vanity'],
   }
+);
+
+async function resolveVanityUrl(vanityUrl: string): Promise<string | null> {
+  return getCachedVanityUrl(vanityUrl);
 }
 
-// Get user's friend list
+// Get user's friend list (cached)
+const getCachedFriendList = unstable_cache(
+  async (steamId: string) => {
+    try {
+      const response = await fetch(
+        `https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${STEAM_API_KEY}&steamid=${steamId}&relationship=friend`,
+        { next: { revalidate: CACHE_REVALIDATE_TIME } }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch friend list. Profile might be private.');
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local');
+      }
+
+      const data = await response.json();
+      return data.friendslist?.friends?.map((friend: SteamFriend) => friend.steamid) || [];
+    } catch (error) {
+      throw error;
+    }
+  },
+  ['friend-list'],
+  {
+    revalidate: CACHE_REVALIDATE_TIME,
+    tags: ['steam-friends'],
+  }
+);
+
 async function getFriendList(steamId: string): Promise<string[]> {
-  try {
-    const response = await fetch(
-      `https://api.steampowered.com/ISteamUser/GetFriendList/v1/?key=${STEAM_API_KEY}&steamid=${steamId}&relationship=friend`
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch friend list. Profile might be private.');
-    }
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local');
-    }
-
-    const data = await response.json();
-    return data.friendslist?.friends?.map((friend: SteamFriend) => friend.steamid) || [];
-  } catch (error) {
-    throw error;
-  }
+  return getCachedFriendList(steamId);
 }
 
-// Get player summaries
+// Get player summaries (cached)
+const getCachedPlayerSummaries = unstable_cache(
+  async (steamIds: string[]) => {
+    try {
+      // Steam API allows up to 100 IDs at once
+      const chunks = [];
+      for (let i = 0; i < steamIds.length; i += 100) {
+        chunks.push(steamIds.slice(i, i + 100));
+      }
+
+      const allPlayers: SteamPlayer[] = [];
+
+      for (const chunk of chunks) {
+        const response = await fetch(
+          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_API_KEY}&steamids=${chunk.join(',')}`,
+          { next: { revalidate: CACHE_REVALIDATE_TIME } }
+        );
+        const data = await response.json();
+        allPlayers.push(...(data.response?.players || []));
+      }
+
+      return allPlayers;
+    } catch (error) {
+      console.error('Error fetching player summaries:', error);
+      return [];
+    }
+  },
+  ['player-summaries'],
+  {
+    revalidate: CACHE_REVALIDATE_TIME,
+    tags: ['steam-players'],
+  }
+);
+
 async function getPlayerSummaries(steamIds: string[]): Promise<SteamPlayer[]> {
-  try {
-    // Steam API allows up to 100 IDs at once
-    const chunks = [];
-    for (let i = 0; i < steamIds.length; i += 100) {
-      chunks.push(steamIds.slice(i, i + 100));
-    }
-
-    const allPlayers: SteamPlayer[] = [];
-
-    for (const chunk of chunks) {
-      const response = await fetch(
-        `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_API_KEY}&steamids=${chunk.join(',')}`
-      );
-      const data = await response.json();
-      allPlayers.push(...(data.response?.players || []));
-    }
-
-    return allPlayers;
-  } catch (error) {
-    console.error('Error fetching player summaries:', error);
-    return [];
-  }
+  return getCachedPlayerSummaries(steamIds);
 }
 
-// Get VAC ban status
-async function getVACBanStatus(steamIds: string[]): Promise<VACBanInfo[]> {
-  try {
-    // Steam API allows up to 100 IDs at once
-    const chunks = [];
-    for (let i = 0; i < steamIds.length; i += 100) {
-      chunks.push(steamIds.slice(i, i + 100));
+// Get VAC ban status (cached)
+const getCachedVACBanStatus = unstable_cache(
+  async (steamIds: string[]) => {
+    try {
+      // Steam API allows up to 100 IDs at once
+      const chunks = [];
+      for (let i = 0; i < steamIds.length; i += 100) {
+        chunks.push(steamIds.slice(i, i + 100));
+      }
+
+      const allBanInfo: VACBanInfo[] = [];
+
+      for (const chunk of chunks) {
+        const response = await fetch(
+          `https://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${STEAM_API_KEY}&steamids=${chunk.join(',')}`,
+          { next: { revalidate: CACHE_REVALIDATE_TIME } }
+        );
+        const data = await response.json();
+        allBanInfo.push(...(data.players || []));
+      }
+
+      return allBanInfo;
+    } catch (error) {
+      console.error('Error fetching VAC ban status:', error);
+      return [];
     }
-
-    const allBanInfo: VACBanInfo[] = [];
-
-    for (const chunk of chunks) {
-      const response = await fetch(
-        `https://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${STEAM_API_KEY}&steamids=${chunk.join(',')}`
-      );
-      const data = await response.json();
-      allBanInfo.push(...(data.players || []));
-    }
-
-    return allBanInfo;
-  } catch (error) {
-    console.error('Error fetching VAC ban status:', error);
-    return [];
+  },
+  ['vac-ban-status'],
+  {
+    revalidate: CACHE_REVALIDATE_TIME,
+    tags: ['steam-bans'],
   }
+);
+
+async function getVACBanStatus(steamIds: string[]): Promise<VACBanInfo[]> {
+  return getCachedVACBanStatus(steamIds);
 }
 
 export async function POST(request: NextRequest) {

@@ -60,7 +60,7 @@ export function BannedFriendCard({
         }
       >
         <div className="flex items-center gap-2">
-          <div className="relative flex-shrink-0">
+          <div className="relative shrink-0">
             <Image
               src={friend.avatar}
               alt={friend.personaname}
@@ -70,11 +70,11 @@ export function BannedFriendCard({
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm text-white truncate group-hover:text-[var(--card-text)] transition-colors">
+            <h3 className="font-semibold text-sm text-white truncate group-hover:text-[--card-text] transition-colors">
               {friend.personaname.length > 16 ? friend.personaname.slice(0, 13) + "..." : friend.personaname}
             </h3>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             {friend.VACBanned && (
               <Badge
                 variant="destructive"

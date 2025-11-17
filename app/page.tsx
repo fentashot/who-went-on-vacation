@@ -4,6 +4,7 @@ import {
   getCompactViewFromCookies,
 } from "@/lib/theme-actions";
 import { ThemeProvider } from "@/contexts/theme-context";
+import { ProfileProvider } from "@/contexts/profile-context";
 import { HomeClient } from "@/app/home-client";
 
 export default async function Home() {
@@ -17,7 +18,9 @@ export default async function Home() {
       initialGridSize={gridSize}
       initialCompactView={compactView}
     >
-      <HomeClient />
+      <ProfileProvider>
+        <HomeClient />
+      </ProfileProvider>
     </ThemeProvider>
   );
 }

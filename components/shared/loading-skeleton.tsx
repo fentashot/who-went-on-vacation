@@ -1,32 +1,163 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function LoadingSkeleton() {
+  const shimmer = {
+    hidden: { x: "-100%" },
+    visible: {
+      x: "100%",
+      transition: {
+        repeat: Infinity,
+        duration: 1.5,
+        ease: "linear" as const,
+      },
+    },
+  };
+
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+      },
+    }),
+  };
+
   return (
-    <div className="w-full max-w-6xl px-2">
+    <div className="w-full max-w-7xl px-2 mx-auto">
       {/* Profile Skeleton */}
-      <div>
-        <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-fit mx-auto animate-pulse">
-          <CardContent className="h-52 w-100"></CardContent>
-        </Card>
-      </div>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        custom={0}
+        variants={fadeIn}
+      >
+        <div className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-fit mx-auto h-[162px] rounded-lg">
+          <CardContent className="h-32 w-[460px] relative overflow-hidden">
+            {/* Shimmer effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+              initial="hidden"
+              animate="visible"
+              variants={shimmer}
+            />
+
+            {/* Avatar circle */}
+            <div className="absolute left-6 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-zinc-800/50" />
+
+            {/* Text lines */}
+            <div className="absolute left-36 top-1/2 -translate-y-1/2 space-y-2">
+              <div className="h-5 w-full bg-zinc-800/50 rounded" />
+              <div className="h-4 w-32 bg-zinc-800/50 rounded" />
+              <div className="h-4 w-40 bg-zinc-800/50 rounded" />
+            </div>
+          </CardContent>
+        </div>
+      </motion.div>
 
       {/* Stats and Results Skeleton */}
-      <div className="">
-        {/* Title and Badges Skeleton */}
-        <div className="text-center space-y-4"></div>
+      <div className="mt-14">
+        {/* Title Skeleton */}
+        <motion.div
+          className="text-center space-y-2 mb-12"
+          initial="hidden"
+          animate="visible"
+          custom={1}
+          variants={fadeIn}
+        >
+          <div className="h-10 w-96 bg-zinc-800/50 rounded mx-auto overflow-hidden relative">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent "
+              animate="visible"
+              variants={shimmer}
+            />
+          </div>
+          <div className="h-8 w-80 bg-zinc-800/50 rounded mx-auto overflow-hidden relative">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+              initial="hidden"
+              animate="visible"
+              variants={shimmer}
+            />
+          </div>
+        </motion.div>
 
         {/* Search and Sort Skeleton */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-3 md:px-12 lg:px-2"></div>
+        <motion.div
+          className="mb-6 flex flex-col sm:flex-row gap-3 lg:px-2"
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          variants={fadeIn}
+        >
+          <div className="flex-1 h-10 bg-zinc-800/50 rounded-lg overflow-hidden relative">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+              initial="hidden"
+              animate="visible"
+              variants={shimmer}
+            />
+          </div>
+          <div className="flex gap-2">
+            <div className="w-28 h-10 bg-zinc-800/50 rounded-lg overflow-hidden relative">
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                initial="hidden"
+                animate="visible"
+                variants={shimmer}
+              />
+            </div>
+            <div className="w-28 h-10 bg-zinc-800/50 rounded-lg overflow-hidden relative">
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                initial="hidden"
+                animate="visible"
+                variants={shimmer}
+              />
+            </div>
+          </div>
+        </motion.div>
 
         {/* Cards Grid Skeleton */}
-        <div className="grid md:px-12 lg:px-2 grid-cols-1 lg:grid-cols-2 gap-3">
-          {[...Array(6)].map((_, i) => (
-            <Card
+        <div className="grid lg:px-2 grid-cols-1 lg:grid-cols-2 gap-3">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
               key={i}
-              className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md animate-pulse"
+              initial="hidden"
+              animate="visible"
+              custom={3 + i}
+              variants={fadeIn}
             >
-              <CardContent className="p-6 h-32"></CardContent>
-            </Card>
+              <div className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden rounded-lg h-[124px]">
+                <CardContent className="p-6 h-32 relative">
+                  {/* Shimmer effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                    initial="hidden"
+                    animate="visible"
+                    variants={shimmer}
+                  />
+
+                  {/* Avatar */}
+                  <div className="absolute left-6 top-6 w-16 h-16 rounded-full bg-zinc-800/50" />
+
+                  {/* Content lines */}
+                  <div className="absolute left-28 top-6 space-y-2">
+                    <div className="h-5 w-32 bg-zinc-800/50 rounded" />
+                    <div className="h-4 w-24 bg-zinc-800/50 rounded" />
+                    <div className="h-4 w-28 bg-zinc-800/50 rounded" />
+                  </div>
+
+                  {/* Badge */}
+                  <div className="absolute right-6 top-6 w-20 h-8 bg-zinc-800/50 rounded-full" />
+                </CardContent>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
