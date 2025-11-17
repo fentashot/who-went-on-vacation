@@ -126,12 +126,10 @@ export function PageClient({ steamid }: PageClientProps) {
                   )}
                 </div> */}
 
-                <div className="grid lg:grid-cols-3 gap-4 ">
-                  {currentProfile.userProfile?.steamid && (
-                    <LeetifyStats
-                    />
-                  )}
-                </div>
+                {currentProfile.userProfile?.steamid && (
+                  <LeetifyStats
+                  />
+                )}
               </div>
 
               {/* Friends Section */}

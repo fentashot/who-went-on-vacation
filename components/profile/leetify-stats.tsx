@@ -57,34 +57,46 @@ export function LeetifyStats() {
 
   if (loading) {
     return (
-      <div className="">
-        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100" />
+      <div className="grid grid-cols-3 gap-4">
+        <div className="grid">
+          {currentProfile?.userProfile && (
+            <UserProfileCard profile={currentProfile.userProfile} />
+          )}
+        </div>
+        <Skeleton className="col-span-2 bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-5xl">
-        <CardContent className="p-12 flex flex-col items-center justify-center text-center">
-          <AlertCircle className="w-12 h-12 text-yellow-500 mb-4" />
-          <p className="text-gray-400 mb-2">{error}</p>
-          <a
-            href={leetifyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: themeConfig?.text }}
-            className={
-              "text-sm transition-colors" +
-              (themeConfig
-                ? ` text-[${themeConfig.accent}] hover:text-[${themeConfig.accent}]`
-                : "text-pink-400 hover:text-pink-300")
-            }
-          >
-            View Leetify Profile →
-          </a>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="grid">
+          {currentProfile?.userProfile && (
+            <UserProfileCard profile={currentProfile.userProfile} />
+          )}
+        </div>
+        <Card className="col-span-2 bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-5xl">
+          <CardContent className="p-12 flex flex-col items-center justify-center text-center">
+            <AlertCircle className="w-12 h-12 text-yellow-500 mb-4" />
+            <p className="text-gray-400 mb-2">{error}</p>
+            <a
+              href={leetifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: themeConfig?.text }}
+              className={
+                "text-sm transition-colors" +
+                (themeConfig
+                  ? ` text-[${themeConfig.accent}] hover:text-[${themeConfig.accent}]`
+                  : "text-pink-400 hover:text-pink-300")
+              }
+            >
+              View Leetify Profile →
+            </a>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -93,7 +105,7 @@ export function LeetifyStats() {
   }
 
   return (
-    <>
+    <div className="grid grid-cols-3 gap-4">
       <div className="grid">
         {currentProfile?.userProfile && (
           <UserProfileCard profile={currentProfile.userProfile} />
@@ -246,8 +258,8 @@ export function LeetifyStats() {
                       <div
                         key={index}
                         className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${result === "W"
-                          ? "bg-emerald-500 text-white"
-                          : "bg-red-500 text-white"
+                            ? "bg-emerald-500 text-white"
+                            : "bg-red-500 text-white"
                           }`}
                       >
                         {result}
@@ -260,6 +272,6 @@ export function LeetifyStats() {
           </div>
         </CardContent>
       </div>
-    </>
+    </div>
   );
 }
