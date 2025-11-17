@@ -71,7 +71,9 @@ export function BannedFriendCard({
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm text-white truncate group-hover:text-[--card-text] transition-colors">
-              {friend.personaname.length > 16 ? friend.personaname.slice(0, 13) + "..." : friend.personaname}
+              {friend.personaname.length > 16
+                ? friend.personaname.slice(0, 13) + "..."
+                : friend.personaname}
             </h3>
           </div>
           <div className="flex items-center gap-2 shrink-0">

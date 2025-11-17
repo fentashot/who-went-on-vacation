@@ -29,9 +29,9 @@ export function UserProfileCard({ profile }: UserProfileCardProps) {
   const faceitUrl = `https://www.faceit.com/en/search/player/${profile.personaname}`;
 
   return (
-    <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-fit mx-auto">
+    <Card className="w-full bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden mx-auto">
       <CardContent>
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col gap-4">
           {/* Avatar & Basic Info */}
           <div className="flex items-start gap-4">
             <div className="relative">
@@ -45,7 +45,7 @@ export function UserProfileCard({ profile }: UserProfileCardProps) {
               />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-white mb-2 gap-2">
                 {profile.personaname}
               </h3>
               <div className="flex flex-wrap gap-2 mb-3">

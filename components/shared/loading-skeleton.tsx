@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function LoadingSkeleton() {
   const shimmer = {
@@ -31,34 +32,10 @@ export function LoadingSkeleton() {
   return (
     <div className="w-full max-w-7xl px-2 mx-auto">
       {/* Profile Skeleton */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        custom={0}
-        variants={fadeIn}
-      >
-        <div className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-fit mx-auto h-[162px] rounded-lg">
-          <CardContent className="h-32 w-[460px] relative overflow-hidden">
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-              initial="hidden"
-              animate="visible"
-              variants={shimmer}
-            />
-
-            {/* Avatar circle */}
-            <div className="absolute left-6 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-zinc-800/50" />
-
-            {/* Text lines */}
-            <div className="absolute left-36 top-1/2 -translate-y-1/2 space-y-2">
-              <div className="h-5 w-full bg-zinc-800/50 rounded" />
-              <div className="h-4 w-32 bg-zinc-800/50 rounded" />
-              <div className="h-4 w-40 bg-zinc-800/50 rounded" />
-            </div>
-          </CardContent>
-        </div>
-      </motion.div>
+      <div className="grid grid-cols-3 gap-4 max-w-5xl mx-auto">
+        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100" />
+        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100 col-span-2" />
+      </div>
 
       {/* Stats and Results Skeleton */}
       <div className="mt-14">

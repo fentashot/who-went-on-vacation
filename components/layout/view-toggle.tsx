@@ -15,7 +15,7 @@ export function ViewToggle() {
       {compactView ? (
         <>
           <LayoutGrid className="w-4 h-4" />
-          <span className="text-sm hidden sm:inline">Grid</span>
+          <span className="text-sm hidden sm:inline">Default</span>
         </>
       ) : (
         <>

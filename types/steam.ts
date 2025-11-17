@@ -13,7 +13,7 @@ export interface FriendProfile {
   EconomyBan: string;
 }
 
-export interface ApiResponse {
+export interface ApiResponseSteam {
   message: string;
   totalFriends?: number;
   allFriends: FriendProfile[];

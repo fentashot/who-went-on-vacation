@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { unstable_cache } from 'next/cache';
+import { NextRequest, NextResponse } from "next/server";
+import { unstable_cache } from "next/cache";
 
 const STEAM_API_KEY = process.env.STEAM_API_KEY;
 
@@ -56,7 +56,7 @@ function extractSteamId(input: string): string | null {
 
   // If no pattern matched, treat as vanity URL (custom ID)
   // Remove any leading slashes or dots
-  const vanityUrl = cleanInput.replace(/^[\.\/]+/, '');
+  const vanityUrl = cleanInput.replace(/^[\.\/]+/, "");
 
   // If it looks like a simple username/ID (no special chars except underscore/hyphen)
   if (/^[a-zA-Z0-9_-]+$/.test(vanityUrl)) {
@@ -76,14 +76,18 @@ const getCachedVanityUrl = unstable_cache(
       );
 
       if (!response.ok) {
-        console.error('Steam API error:', response.status, response.statusText);
+        console.error("Steam API error:", response.status, response.statusText);
         return null;
       }
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        console.error('Steam API returned non-JSON response. Check if your API key is valid.');
-        throw new Error('Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local');
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error(
+          "Steam API returned non-JSON response. Check if your API key is valid."
+        );
+        throw new Error(
+          "Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local"
+        );
       }
 
       const data = await response.json();
@@ -93,14 +97,14 @@ const getCachedVanityUrl = unstable_cache(
       }
       return null;
     } catch (error) {
-      console.error('Error resolving vanity URL:', error);
+      console.error("Error resolving vanity URL:", error);
       throw error;
     }
   },
-  ['vanity-url'],
+  ["vanity-url"],
   {
     revalidate: CACHE_REVALIDATE_TIME,
-    tags: ['steam-vanity'],
+    tags: ["steam-vanity"],
   }
 );
 
@@ -118,24 +122,32 @@ const getCachedFriendList = unstable_cache(
       );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch friend list. Profile might be private.');
+        throw new Error(
+          "Failed to fetch friend list. Profile might be private."
+        );
       }
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local');
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error(
+          "Invalid Steam API key or API error. Please check your STEAM_API_KEY in .env.local"
+        );
       }
 
       const data = await response.json();
-      return data.friendslist?.friends?.map((friend: SteamFriend) => friend.steamid) || [];
+      return (
+        data.friendslist?.friends?.map(
+          (friend: SteamFriend) => friend.steamid
+        ) || []
+      );
     } catch (error) {
       throw error;
     }
   },
-  ['friend-list'],
+  ["friend-list"],
   {
     revalidate: CACHE_REVALIDATE_TIME,
-    tags: ['steam-friends'],
+    tags: ["steam-friends"],
   }
 );
 
@@ -157,7 +169,9 @@ const getCachedPlayerSummaries = unstable_cache(
 
       for (const chunk of chunks) {
         const response = await fetch(
-          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_API_KEY}&steamids=${chunk.join(',')}`,
+          `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_API_KEY}&steamids=${chunk.join(
+            ","
+          )}`,
           { next: { revalidate: CACHE_REVALIDATE_TIME } }
         );
         const data = await response.json();
@@ -166,14 +180,14 @@ const getCachedPlayerSummaries = unstable_cache(
 
       return allPlayers;
     } catch (error) {
-      console.error('Error fetching player summaries:', error);
+      console.error("Error fetching player summaries:", error);
       return [];
     }
   },
-  ['player-summaries'],
+  ["player-summaries"],
   {
     revalidate: CACHE_REVALIDATE_TIME,
-    tags: ['steam-players'],
+    tags: ["steam-players"],
   }
 );
 
@@ -195,7 +209,9 @@ const getCachedVACBanStatus = unstable_cache(
 
       for (const chunk of chunks) {
         const response = await fetch(
-          `https://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${STEAM_API_KEY}&steamids=${chunk.join(',')}`,
+          `https://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=${STEAM_API_KEY}&steamids=${chunk.join(
+            ","
+          )}`,
           { next: { revalidate: CACHE_REVALIDATE_TIME } }
         );
         const data = await response.json();
@@ -204,14 +220,14 @@ const getCachedVACBanStatus = unstable_cache(
 
       return allBanInfo;
     } catch (error) {
-      console.error('Error fetching VAC ban status:', error);
+      console.error("Error fetching VAC ban status:", error);
       return [];
     }
   },
-  ['vac-ban-status'],
+  ["vac-ban-status"],
   {
     revalidate: CACHE_REVALIDATE_TIME,
-    tags: ['steam-bans'],
+    tags: ["steam-bans"],
   }
 );
 
@@ -223,14 +239,20 @@ export async function POST(request: NextRequest) {
   try {
     if (!STEAM_API_KEY) {
       return NextResponse.json(
-        { error: 'Steam API key not configured. Please add STEAM_API_KEY to your .env.local file. Get your key from: https://steamcommunity.com/dev/apikey' },
+        {
+          error:
+            "Steam API key not configured. Please add STEAM_API_KEY to your .env.local file. Get your key from: https://steamcommunity.com/dev/apikey",
+        },
         { status: 500 }
       );
     }
 
-    if (STEAM_API_KEY === 'your_steam_api_key_here') {
+    if (STEAM_API_KEY === "your_steam_api_key_here") {
       return NextResponse.json(
-        { error: 'Please replace the placeholder STEAM_API_KEY in .env.local with your actual Steam API key from: https://steamcommunity.com/dev/apikey' },
+        {
+          error:
+            "Please replace the placeholder STEAM_API_KEY in .env.local with your actual Steam API key from: https://steamcommunity.com/dev/apikey",
+        },
         { status: 500 }
       );
     }
@@ -239,7 +261,7 @@ export async function POST(request: NextRequest) {
 
     if (!profileUrl) {
       return NextResponse.json(
-        { error: 'Profile URL is required' },
+        { error: "Profile URL is required" },
         { status: 400 }
       );
     }
@@ -254,7 +276,7 @@ export async function POST(request: NextRequest) {
 
     if (!steamId) {
       return NextResponse.json(
-        { error: 'Invalid Steam profile URL' },
+        { error: "Invalid Steam profile URL" },
         { status: 400 }
       );
     }
@@ -273,7 +295,7 @@ export async function POST(request: NextRequest) {
 
     if (friendIds.length === 0) {
       return NextResponse.json({
-        message: 'No friends found or profile is private',
+        message: "No friends found or profile is private",
         userProfile: userData,
         totalFriends: 0,
         allFriends: [],
@@ -288,8 +310,8 @@ export async function POST(request: NextRequest) {
     const allPlayers = await getPlayerSummaries(friendIds);
 
     // Combine player info with ban info for all friends
-    const allFriends = allPlayers.map(player => {
-      const banInfo = banStatuses.find(ban => ban.SteamId === player.steamid);
+    const allFriends = allPlayers.map((player) => {
+      const banInfo = banStatuses.find((ban) => ban.SteamId === player.steamid);
       return {
         ...player,
         ...banInfo,
@@ -297,8 +319,10 @@ export async function POST(request: NextRequest) {
     });
 
     // Filter friends with VAC bans
-    const bannedFriends = allFriends.filter(friend =>
-      friend.VACBanned || (friend.NumberOfGameBans && friend.NumberOfGameBans > 0)
+    const bannedFriends = allFriends.filter(
+      (friend) =>
+        friend.VACBanned ||
+        (friend.NumberOfGameBans && friend.NumberOfGameBans > 0)
     );
 
     return NextResponse.json({
@@ -308,11 +332,10 @@ export async function POST(request: NextRequest) {
       allFriends,
       bannedFriends,
     });
-
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error("Error processing request:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'An error occurred' },
+      { error: error instanceof Error ? error.message : "An error occurred" },
       { status: 500 }
     );
   }

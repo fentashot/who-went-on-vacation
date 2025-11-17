@@ -25,6 +25,7 @@ import { type SortOrder } from "@/types/steam";
 
 // Utils
 import { filterAndSortFriends } from "@/lib/utils";
+import { LeetifyStats } from "@/components/profile/leetify-stats";
 
 interface PageClientProps {
   steamid: string;
@@ -34,6 +35,8 @@ export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
   const { themeConfig, gridSize } = useTheme();
   const { currentProfile, loading, error, fetchAndSetProfile } = useProfile();
+
+  console.log(currentProfile?.userProfile);
 
   // UI State
   const [mounted, setMounted] = useState(false);
@@ -74,10 +77,16 @@ export function PageClient({ steamid }: PageClientProps) {
     [friendsToDisplay, searchQuery, sortOrder]
   );
 
-
   return (
-    <div className="min-h-screen bg-black text-white relative" suppressHydrationWarning>
-      <ThemeBackground mounted={mounted} themeConfig={themeConfig} gridSize={gridSize} />
+    <div
+      className="min-h-screen bg-black text-white relative"
+      suppressHydrationWarning
+    >
+      <ThemeBackground
+        mounted={mounted}
+        themeConfig={themeConfig}
+        gridSize={gridSize}
+      />
 
       <div className="relative min-h-screen flex flex-col items-center py-10">
         {/* Top Controls */}
@@ -89,8 +98,9 @@ export function PageClient({ steamid }: PageClientProps) {
 
         {/* Main Content */}
         <div className="w-full max-w-7xl px-4 mt-8">
+
           {/* Search Bar */}
-          <div className="mb-8">
+          <div className="mb-10 mx-auto space-y-10 max-w-3xl">
             <SteamSearchBar
               onSearch={handleSearch}
               loading={loading}
@@ -104,17 +114,28 @@ export function PageClient({ steamid }: PageClientProps) {
 
           {/* Loading State */}
           {loading && !currentProfile && <LoadingSkeleton />}
-
+          {/* <LoadingSkeleton /> */}
           {/* Profile Results */}
           {currentProfile && (
-            <div className="w-full space-y-14">
-              {/* User Profile Card */}
-              {currentProfile.userProfile && (
-                <UserProfileCard profile={currentProfile.userProfile} />
-              )}
+            <div className="w-full space-y-14 mx-auto">
+              <div className="max-w-5xl mx-auto">
+                {/* User Profile Card */}
+                {/* <div className="grid">
+                  {currentProfile.userProfile && (
+                    <UserProfileCard profile={currentProfile.userProfile} />
+                  )}
+                </div> */}
+
+                <div className="grid lg:grid-cols-3 gap-4 ">
+                  {currentProfile.userProfile?.steamid && (
+                    <LeetifyStats
+                    />
+                  )}
+                </div>
+              </div>
 
               {/* Friends Section */}
-              <div className="space-y-10 px-2">
+              <div className="space-y-10">
                 {/* Section Header */}
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-white mb-4">
@@ -135,8 +156,11 @@ export function PageClient({ steamid }: PageClientProps) {
                 {friendsToDisplay.length > 0 ? (
                   <>
                     {/* Search & Sort Controls */}
-                    <div className="mb-6 flex flex-col sm:flex-row gap-3 lg:px-2">
-                      <FriendsSearchBar value={searchQuery} onChange={setSearchQuery} />
+                    <div className="mb-6 flex flex-col sm:flex-row gap-3 ">
+                      <FriendsSearchBar
+                        value={searchQuery}
+                        onChange={setSearchQuery}
+                      />
                       <div className="flex gap-2">
                         <SortButton
                           order="newest"
@@ -160,7 +184,8 @@ export function PageClient({ steamid }: PageClientProps) {
                     {/* Search Results Count */}
                     {searchQuery && (
                       <p className="text-sm text-gray-400 mb-3">
-                        Showing {filteredAndSortedFriends.length} of {friendsToDisplay.length}{" "}
+                        Showing {filteredAndSortedFriends.length} of{" "}
+                        {friendsToDisplay.length}{" "}
                         {showOnlyBanned ? "banned friends" : "friends"}
                       </p>
                     )}

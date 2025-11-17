@@ -182,9 +182,6 @@ export function SteamSearchBar({
                           ? "border-red-500/70 focus:border-red-500"
                           : "border-zinc-700/50 focus:border-zinc-600/50"
                           }`}
-                        style={{
-                          colorScheme: "dark",
-                        }}
                         disabled={loading}
                         {...field}
                       />

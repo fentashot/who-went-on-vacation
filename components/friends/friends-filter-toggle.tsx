@@ -49,7 +49,7 @@ export function FriendsFilterToggle({
   };
 
   return (
-    <div className="flex items-center justify-center gap-3 flex-wrap">
+    <div className="flex items-center justify-center gap-3 ">
       {/* Total Friends Button */}
       <button
         onClick={() => onToggle(false)}
@@ -57,10 +57,10 @@ export function FriendsFilterToggle({
         style={
           !showOnlyBanned
             ? {
-              backgroundColor: "#52525b80",
-              borderColor: "#52525b",
-              color: "white",
-            }
+                backgroundColor: "#52525b80",
+                borderColor: "#52525b",
+                color: "white",
+              }
             : INACTIVE_STYLES
         }
         onMouseEnter={(e) => handleMouseEnter(e, !showOnlyBanned)}
@@ -77,10 +77,10 @@ export function FriendsFilterToggle({
         style={
           showOnlyBanned
             ? {
-              backgroundColor: `${themeConfig.accent}20`,
-              borderColor: themeConfig.accent,
-              color: themeConfig.text,
-            }
+                backgroundColor: `${themeConfig.accent}20`,
+                borderColor: themeConfig.accent,
+                color: themeConfig.text,
+              }
             : INACTIVE_STYLES
         }
         onMouseEnter={(e) => handleMouseEnter(e, showOnlyBanned)}

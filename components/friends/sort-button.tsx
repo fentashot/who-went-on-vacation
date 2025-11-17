@@ -26,16 +26,17 @@ export function SortButton({
     <Button
       onClick={() => onSort(order)}
       variant="outline"
-      className={`h-10 rounded-lg transition-all duration-500 ${isActive
-        ? "text-white hover:text-gray-200"
-        : "bg-zinc-900/30 border-zinc-700/50 text-white hover:text-gray-200 hover:bg-zinc-800/40"
-        }`}
+      className={`h-10 rounded-lg transition-all duration-500 ${
+        isActive
+          ? "text-white hover:text-gray-200"
+          : "bg-zinc-900/30 border-zinc-700/50 text-white hover:text-gray-200 hover:bg-zinc-800/40"
+      }`}
       style={
         isActive
           ? {
-            backgroundColor: themeConfig.accent,
-            borderColor: themeConfig.accent,
-          }
+              backgroundColor: themeConfig.accent,
+              borderColor: themeConfig.accent,
+            }
           : undefined
       }
       onMouseEnter={(e) =>

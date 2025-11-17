@@ -7,11 +7,11 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { type ApiResponse } from "@/types/steam";
+import { type ApiResponseSteam } from "@/types/steam";
 import { createCacheKey } from "@/lib/utils";
 
 interface ProfileContextType {
-  currentProfile: ApiResponse | null;
+  currentProfile: ApiResponseSteam | null;
   loading: boolean;
   error: string | null;
   fetchAndSetProfile: (profileId: string) => Promise<boolean>;
@@ -22,10 +22,10 @@ interface ProfileContextType {
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
 // Cache outside context to persist
-const profileCache = new Map<string, ApiResponse>();
+const profileCache = new Map<string, ApiResponseSteam>();
 
 export function ProfileProvider({ children }: { children: ReactNode }) {
-  const [currentProfile, setCurrentProfile] = useState<ApiResponse | null>(
+  const [currentProfile, setCurrentProfile] = useState<ApiResponseSteam | null>(
     null
   );
   const [loading, setLoading] = useState(false);

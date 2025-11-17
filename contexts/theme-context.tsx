@@ -168,7 +168,8 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(initialTheme);
   const [gridSize, setGridSizeState] = useState<number>(initialGridSize);
-  const [compactView, setCompactViewState] = useState<boolean>(initialCompactView);
+  const [compactView, setCompactViewState] =
+    useState<boolean>(initialCompactView);
   const [isPending, startTransition] = useTransition();
 
   const setTheme = (newTheme: Theme) => {
@@ -206,9 +207,18 @@ export function ThemeProvider({
   const themeConfig = getThemeConfig(theme);
 
   return (
-    <ThemeContext.Provider value={{ theme, themeConfig, setTheme, isPending, gridSize, setGridSize, compactView, setCompactView }}>
-
-
+    <ThemeContext.Provider
+      value={{
+        theme,
+        themeConfig,
+        setTheme,
+        isPending,
+        gridSize,
+        setGridSize,
+        compactView,
+        setCompactView,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
