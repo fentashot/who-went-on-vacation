@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { type ApiResponse } from "@/types/steam";
 import { createCacheKey } from "@/lib/utils";
 
@@ -12,7 +12,7 @@ export function useSteamProfile() {
   const [result, setResult] = useState<ApiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProfile = async (profileId: string) => {
+  const fetchProfile = useCallback(async (profileId: string) => {
     const cacheKey = createCacheKey(profileId);
 
     // Check cache first
@@ -25,6 +25,7 @@ export function useSteamProfile() {
 
     setLoading(true);
     setError(null);
+    setResult(null);
 
     try {
       const res = await fetch("/api/steam", {
@@ -36,16 +37,19 @@ export function useSteamProfile() {
 
       if (res.ok) {
         setResult(data);
+        setError(null);
         profileCache.set(cacheKey, data);
       } else {
         setError(data.error || "An error occurred");
+        setResult(null);
       }
     } catch {
       setError("Failed to connect to the server");
+      setResult(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return { loading, result, error, fetchProfile };
 }

@@ -35,15 +35,72 @@ const SteamIcon = ({ className }: { className?: string }) => (
 export function BannedFriendCard({
   friend,
   themeConfig,
+  compact = false,
 }: {
   friend: BannedFriend;
   themeConfig?: ThemeConfig;
+  compact?: boolean;
 }) {
   const router = useRouter();
 
   const handleCardClick = () => {
     router.push(`/id/${friend.steamid}`);
   };
+
+  if (compact) {
+    return (
+      <div
+        onClick={handleCardClick}
+        className="group relative overflow-hidden rounded-lg border border-zinc-800/50 bg-zinc-900/30 backdrop-blur-md hover:bg-zinc-800/40 cursor-pointer transition-all duration-300 hover:border-zinc-700/50 p-3"
+        style={
+          {
+            "--card-accent": themeConfig?.accent || "rgb(220, 38, 38)",
+            "--card-text": themeConfig?.text || "rgb(239, 68, 68)",
+          } as React.CSSProperties
+        }
+      >
+        <div className="flex items-center gap-2">
+          <div className="relative flex-shrink-0">
+            <Image
+              src={friend.avatar}
+              alt={friend.personaname}
+              width={40}
+              height={40}
+              className="rounded-md"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm text-white truncate group-hover:text-[var(--card-text)] transition-colors">
+              {friend.personaname.length > 16 ? friend.personaname.slice(0, 13) + "..." : friend.personaname}
+            </h3>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {friend.VACBanned && (
+              <Badge
+                variant="destructive"
+                className="bg-red-900/30 text-red-400 border-red-800/50 text-xs px-2 py-0"
+              >
+                VAC
+              </Badge>
+            )}
+            {friend.NumberOfGameBans > 0 && (
+              <Badge
+                variant="destructive"
+                className="bg-orange-900/30 text-orange-400 border-orange-800/50 text-xs px-2 py-0"
+              >
+                Game
+              </Badge>
+            )}
+            {friend.DaysSinceLastBan > 0 && (
+              <span className="text-xs text-gray-400">
+                {friend.DaysSinceLastBan}d
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

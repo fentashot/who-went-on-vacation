@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useContext, useState, useTransition } from "react";
-import { setThemeInCookies } from "@/lib/theme-actions";
+import {
+  setThemeInCookies,
+  setGridSizeInCookies,
+  setCompactViewInCookies,
+} from "@/lib/theme-actions";
 
 export type Theme =
   | "red"
@@ -141,6 +145,10 @@ interface ThemeContextType {
   themeConfig: ThemeConfig;
   setTheme: (theme: Theme) => void;
   isPending: boolean;
+  gridSize: number;
+  setGridSize: (size: number) => void;
+  compactView: boolean;
+  setCompactView: (compact: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -148,23 +156,59 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 interface ThemeProviderProps {
   children: React.ReactNode;
   initialTheme: Theme;
+  initialGridSize: number;
+  initialCompactView: boolean;
 }
 
-export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
+export function ThemeProvider({
+  children,
+  initialTheme,
+  initialGridSize,
+  initialCompactView,
+}: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(initialTheme);
+  const [gridSize, setGridSizeState] = useState<number>(initialGridSize);
+  const [compactView, setCompactViewState] = useState<boolean>(initialCompactView);
   const [isPending, startTransition] = useTransition();
 
   const setTheme = (newTheme: Theme) => {
-    startTransition(async () => {
+    // Use transition for smooth color changes
+    startTransition(() => {
       setThemeState(newTheme);
-      await setThemeInCookies(newTheme);
+    });
+
+    // Save to cookies in background
+    setThemeInCookies(newTheme).catch((error) => {
+      console.error("Failed to save theme preference:", error);
+    });
+  };
+
+  const setGridSize = (newSize: number) => {
+    // Update state immediately for instant slider response
+    setGridSizeState(newSize);
+
+    // Save to cookies in background
+    setGridSizeInCookies(newSize).catch((error) => {
+      console.error("Failed to save grid size preference:", error);
+    });
+  };
+
+  const setCompactView = (newCompact: boolean) => {
+    // Update state immediately for instant UI response
+    setCompactViewState(newCompact);
+
+    // Save to cookies in background without blocking
+    setCompactViewInCookies(newCompact).catch((error) => {
+      console.error("Failed to save compact view preference:", error);
     });
   };
 
   const themeConfig = getThemeConfig(theme);
 
   return (
-    <ThemeContext.Provider value={{ theme, themeConfig, setTheme, isPending }}>
+    <ThemeContext.Provider value={{ theme, themeConfig, setTheme, isPending, gridSize, setGridSize, compactView, setCompactView }}>
+
+
       {children}
     </ThemeContext.Provider>
   );

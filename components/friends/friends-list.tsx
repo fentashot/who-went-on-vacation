@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { BannedFriendCard } from "@/components/friends/banned-friend-card";
 import { type ThemeConfig } from "@/contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 
 export interface BannedFriend {
   steamid: string;
@@ -30,6 +31,8 @@ export function FriendsList({
   searchQuery,
   themeConfig,
 }: FriendsListProps) {
+  const { compactView } = useTheme();
+
   if (friends.length === 0) {
     return (
       <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md min-h-[200px] flex items-center">
@@ -42,16 +45,26 @@ export function FriendsList({
     );
   }
 
+  if (compactView) {
+    return (
+      <div className="gap-2 max-h-[200px] grid md:grid-cols-2 xl:grid-cols-3 lg:px-2 pb-5">
+        {friends.map((friend) => (
+          <BannedFriendCard
+            key={friend.steamid}
+            friend={friend}
+            themeConfig={themeConfig}
+            compact
+          />
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className="grid md:px-12 lg:px-2 gap-3 min-h-[200px] grid-cols-1 lg:grid-cols-2">
+    <div className="grid lg:px-2 gap-3 min-h-[200px] grid-cols-1 lg:grid-cols-2">
       {friends.map((friend, index) => (
         <div
           key={friend.steamid}
-          className={
-            friends.length % 2 !== 0 && index === friends.length - 1
-              ? "lg:col-span-2"
-              : ""
-          }
         >
           <BannedFriendCard friend={friend} themeConfig={themeConfig} />
         </div>

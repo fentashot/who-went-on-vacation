@@ -13,15 +13,13 @@ import { FriendsSearchBar } from "@/components/friends/friends-search-bar";
 import { GridSizeSlider } from "@/components/layout/grid-size-slider";
 import { ErrorMessage } from "@/components/shared/error-message";
 import { FriendsList } from "@/components/friends/friends-list";
+import { ViewToggle } from "@/components/layout/view-toggle";
 import { useSteamProfile } from "@/hooks/use-steam-profile";
 import { type SortOrder } from "@/types/steam";
 import { useTheme } from "@/contexts/theme-context";
+import { ThemeBackground } from "@/components/layout/theme-background";
 
-import {
-  getStoredGridSize,
-  saveGridSize,
-  filterAndSortFriends,
-} from "@/lib/utils";
+import { filterAndSortFriends } from "@/lib/utils";
 
 import { ThemeSelector } from "@/components/layout/theme-selector";
 
@@ -31,7 +29,7 @@ interface PageClientProps {
 
 export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
-  const { themeConfig } = useTheme();
+  const { themeConfig, gridSize } = useTheme();
 
   // Use custom hook for Steam profile data
   const { loading, result, error, fetchProfile } = useSteamProfile();
@@ -41,17 +39,9 @@ export function PageClient({ steamid }: PageClientProps) {
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const [showOnlyBanned, setShowOnlyBanned] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [gridSize, setGridSize] = useState<number | null>(null);
 
-  // Initialize gridSize and mount animation
+  // Mount animation
   useEffect(() => {
-    // Load gridSize from localStorage
-    const loadSettings = () => {
-      setGridSize(getStoredGridSize());
-    };
-
-    requestAnimationFrame(loadSettings);
-
     const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
@@ -67,11 +57,6 @@ export function PageClient({ steamid }: PageClientProps) {
     router.push(`/id/${profileUrl}`);
   };
 
-  const handleGridSizeChange = (newSize: number) => {
-    setGridSize(newSize);
-    saveGridSize(newSize);
-  };
-
   const filteredAndSortedFriends = useMemo(() => {
     if (!result) return [];
 
@@ -83,51 +68,27 @@ export function PageClient({ steamid }: PageClientProps) {
     return filterAndSortFriends(friendsToShow, searchQuery, sortOrder);
   }, [result, showOnlyBanned, searchQuery, sortOrder]);
 
-  // Show black screen until gridSize loads
-  if (gridSize === null) {
-    return <div className="min-h-screen bg-black" />;
-  }
-
   return (
     <div
       className="min-h-screen bg-black text-white relative"
       suppressHydrationWarning
-      style={
-        {
-          "--theme-gradient-from": themeConfig.gradient.from,
-          "--theme-gradient-via": themeConfig.gradient.via,
-          "--theme-gradient-to": themeConfig.gradient.to,
-          "--theme-grid-color": themeConfig.gridColor,
-        } as React.CSSProperties
-      }
     >
-      {/* Background */}
-      <div className="fixed inset-0 bg-black pointer-events-none">
-        <div
-          className={`absolute inset-0 background-grid transition-opacity duration-800 ${
-            mounted ? "opacity-100" : "opacity-0"
-          }`}
-          style={{ backgroundSize: `${gridSize}px ${gridSize}px` }}
-          suppressHydrationWarning
-        />
-        <div
-          className={`absolute inset-0 background-gradient transition-opacity duration-800 ${
-            mounted ? "opacity-100" : "opacity-0"
-          }`}
-          suppressHydrationWarning
-        />
-      </div>
+      <ThemeBackground
+        mounted={mounted}
+        themeConfig={themeConfig}
+        gridSize={gridSize}
+      />
 
       {/* Page */}
       <div className="relative min-h-screen flex flex-col items-center py-10">
         {/* Controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
-          <GridSizeSlider value={gridSize} onChange={handleGridSizeChange} />
+          <ViewToggle />
+          <GridSizeSlider />
           <ThemeSelector />
         </div>
-
         {/* Content */}
-        <div className="w-full max-w-6xl px-4 mt-8">
+        <div className="w-full max-w-7xl px-4 mt-8">
           {/* Search Bar */}
           <div className="mb-8">
             <SteamSearchBar
@@ -141,13 +102,13 @@ export function PageClient({ steamid }: PageClientProps) {
           </div>
 
           {/* Error Message */}
-          {error && <ErrorMessage message={error} themeConfig={themeConfig} />}
+          {error && !loading && <ErrorMessage message={error} themeConfig={themeConfig} />}
 
           {/* Loading State */}
-          {loading && !result && <LoadingSkeleton />}
+          {loading && !result && !error && <LoadingSkeleton />}
 
           {/* Results */}
-          {result && (
+          {result && !error && (
             <div className="w-full space-y-14">
               {/* User Profile */}
               {result.userProfile && (
@@ -179,7 +140,7 @@ export function PageClient({ steamid }: PageClientProps) {
                     : result.allFriends.length > 0
                 ) ? (
                   <>
-                    <div className="mb-6 flex flex-col sm:flex-row gap-3 md:px-12 lg:px-2">
+                    <div className="mb-6 flex flex-col sm:flex-row gap-3 lg:px-2">
                       <FriendsSearchBar
                         value={searchQuery}
                         onChange={setSearchQuery}

@@ -1,15 +1,25 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Loader2Icon, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 import { type ThemeConfig } from "@/contexts/theme-context";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface SteamSearchBarProps {
   onSearch: (profileUrl: string) => void;
   loading?: boolean;
+  error?: string | null;
   themeConfig: ThemeConfig;
   showHeader?: boolean;
   showExamples?: boolean;
@@ -59,24 +69,48 @@ function extractSteamId(input: string): string {
   return cleanInput;
 }
 
+// Zod schema for form validation
+const formSchema = z.object({
+  profileUrl: z
+    .string()
+    .min(1, { message: "Please enter a Steam profile URL or ID" })
+    .refine(
+      (val) => {
+        // Accept Steam ID, URL, or username
+        return /^\d{17}$/.test(val) || // Steam ID
+          /steamcommunity\.com/.test(val) || // Steam URL
+          /^[a-zA-Z0-9_-]+$/.test(val); // Username
+      },
+      { message: "Please enter a valid Steam profile URL or ID" }
+    ),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export function SteamSearchBar({
   onSearch,
   loading = false,
+  error: externalError,
   themeConfig,
   showHeader = true,
   showExamples = true,
   headerTransition = false,
   placeholder,
 }: SteamSearchBarProps) {
-  const [profileUrl, setProfileUrl] = useState("");
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      profileUrl: "",
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (profileUrl.trim()) {
-      const extractedId = extractSteamId(profileUrl);
-      onSearch(extractedId);
-    }
+  const handleSubmit = (values: FormValues) => {
+    const extractedId = extractSteamId(values.profileUrl);
+    onSearch(extractedId);
   };
+
+  // Combined error - either from form validation or external API error
+  const displayError = externalError || form.formState.errors.profileUrl?.message;
 
   return (
     <div
@@ -116,73 +150,102 @@ export function SteamSearchBar({
       )}
 
       <div className="w-full max-w-3xl">
-        <form onSubmit={handleSubmit} className="space-y-14">
-          <div className="flex relative">
-            <motion.div
-              className="absolute left-6 -top-7 text-4xl z-20 pointer-events-none"
-              animate={{
-                y: [0, -10, 0],
-                rotate: [-5, 5, -5],
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              😎
-            </motion.div>
-            <input
-              type="text"
-              value={profileUrl}
-              onChange={(e) => setProfileUrl(e.target.value)}
-              placeholder={
-                ".../id/" + placeholder || "Enter Steam profile URL or ID..."
-              }
-              className="w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-10 pr-8 focus:ring-0 focus:outline-none border-zinc-700/50 text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500"
-              disabled={loading}
-              required
-            />
-            <Button
-              type="submit"
-              disabled={loading}
-              className="h-14 text-white rounded-xl transition-all duration-500 rounded-l-none z-10 border-2 border-l-0"
-              style={{
-                backgroundColor: themeConfig.accent,
-                borderColor: themeConfig.border,
-              }}
-              onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor =
-                themeConfig.accentHover)
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = themeConfig.accent)
-              }
-            >
-              {loading ? (
-                <Loader2Icon className="min-w-12 min-h-6 animate-spin" />
-              ) : (
-                <Search className="min-w-12 min-h-6" />
-              )}
-            </Button>
-          </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="profileUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex relative">
+                    <motion.div
+                      className="absolute left-6 -top-7 text-4xl z-20 pointer-events-none"
+                      animate={{
+                        y: [0, -10, 0],
+                        rotate: [-5, 5, -5],
+                        scale: [1, 1.1, 1],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      😎
+                    </motion.div>
+                    <FormControl>
+                      <input
+                        type="text"
+                        placeholder={
+                          ".../id/" + placeholder || "Enter Steam profile URL or ID..."
+                        }
+                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-10 pr-8 focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 ${displayError
+                            ? "border-red-500/70 focus:border-red-500"
+                            : "border-zinc-700/50 focus:border-zinc-600/50"
+                          }`}
+                        disabled={loading}
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      type="submit"
+                      disabled={loading}
+                      className="h-14 text-white rounded-xl transition-all duration-500 rounded-l-none z-10 border-2 border-l-0 cursor-pointer"
+                      style={{
+                        backgroundColor: themeConfig.accent,
+                        borderColor: themeConfig.border,
+                      }}
+                      onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor =
+                        themeConfig.accentHover)
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = themeConfig.accent)
+                      }
+                    >
+                      {loading ? (
+                        <Loader2Icon className="min-w-12 min-h-6 animate-spin" />
+                      ) : (
+                        <Search className="min-w-12 min-h-6" />
+                      )}
+                    </Button>
+                  </div>
 
-          {showExamples && (
-            <div className={`text-center ${loading ? "hidden" : ""}`}>
-              <p className="text-xs text-gray-500 mb-3 mt-6">
-                Supported formats
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                {BADGE_EXAMPLES.map((text) => (
-                  <Badge key={text} variant="secondary" className={BADGE_CLASS}>
-                    {text}
-                  </Badge>
-                ))}
+                  {displayError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-2 px-4 py-3 rounded-lg border backdrop-blur-md"
+                      style={{
+                        backgroundColor: "rgba(127, 29, 29, 0.2)",
+                        borderColor: "rgb(127, 29, 29)",
+                      }}
+                    >
+                      <div className="w-2 h-2 rounded-full bg-red-500" />
+                      <p className="text-sm text-red-400">{displayError}</p>
+                    </motion.div>
+                  )}
+                </FormItem>
+              )}
+            />
+
+            {showExamples && (
+              <div className={`text-center ${loading ? "hidden" : ""}`}>
+                <p className="text-xs text-gray-500 mb-3 mt-6">
+                  Supported formats
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {BADGE_EXAMPLES.map((text) => (
+                    <Badge key={text} variant="secondary" className={BADGE_CLASS}>
+                      {text}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-        </form>
+            )}
+          </form>
+        </Form>
       </div>
     </div>
   );

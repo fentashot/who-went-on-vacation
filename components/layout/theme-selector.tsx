@@ -29,7 +29,7 @@ export function ThemeSelector() {
           variant="outline"
           className="bg-black/10 border-zinc-700/50 text-white hover:bg-black/30 hover:text-white backdrop-blur-sm"
         >
-          <Palette className="w-4 h-4 mr-2" />
+          <Palette className="w-4 h-4" />
           <span className="hidden sm:inline mr-2">Theme:</span>
           <div
             className="w-4 h-4 rounded-full border border-white/30 transition-colors duration-500"

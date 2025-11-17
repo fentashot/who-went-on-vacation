@@ -114,11 +114,13 @@
 
 @layer base {
   * {
-
+  }
+  html {
+    background: #000 !important;
   }
   body {
     @apply text-foreground;
-    background: transparent !important;
+    background: #000 !important;
   }
 
   /* Custom Scrollbar - Webkit */
