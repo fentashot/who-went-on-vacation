@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Loader2Icon, Eye } from "lucide-react";
+import { Search, Loader2Icon, SmilePlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { type ThemeConfig } from "@/contexts/theme-context";
 import { useForm } from "react-hook-form";
@@ -120,7 +120,7 @@ export function SteamSearchBar({
       {showHeader && (
         <div className="text-center space-y-4 mb-12">
           <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Eye
+            <SmilePlus
               className="w-10 h-10 transition-colors duration-700"
               style={{ color: themeConfig.text }}
             />
@@ -129,10 +129,10 @@ export function SteamSearchBar({
                 className="transition-colors duration-700"
                 style={{ color: themeConfig.text }}
               >
-                One search,
+                Really, 
               </span>{" "}
               <span className="text-white">
-                all bans
+                cool search
                 <span className="inline-block w-8 text-left">
                   <span
                     className={loading ? "animate-blink-dots" : "opacity-0"}
@@ -145,7 +145,7 @@ export function SteamSearchBar({
               </span>
             </h1>
           </div>
-          <p className="text-gray-400 text-lg">Steam VAC Ban Checker</p>
+          <p className="text-gray-400 text-lg">Stats and Banned friends 0.o</p>
         </div>
       )}
 
