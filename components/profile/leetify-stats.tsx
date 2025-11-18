@@ -100,9 +100,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
         <UserProfileCard profile={userProfile!} />
         <div className="flex sm:items-start justify-between">
           <div className="flex gap-2">
-            <h3 className="text-2xl font-bold text-white">
-              Stats
-            </h3>
+            <h3 className="text-2xl font-bold text-white">Stats</h3>
           </div>
           <div>
             <a
@@ -112,8 +110,12 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
               style={{ color: themeConfig?.text }}
               className="text-xs text-pink-400 hover:text-pink-300 transition-colors"
             >
-              <Image src="/Leetify.png" alt="Leetify Logo" width={100} height={40} />
-
+              <Image
+                src="/Leetify.png"
+                alt="Leetify Logo"
+                width={100}
+                height={40}
+              />
             </a>
           </div>
         </div>
@@ -122,7 +124,10 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
           <Badge variant="outline" className={`${faceitBadgeClass} sm:text-sm`}>
             FACEIT: {stats.faceit_elo}
           </Badge>
-          <Badge variant="outline" className={`${premierBadgeClass} sm:text-sm`}>
+          <Badge
+            variant="outline"
+            className={`${premierBadgeClass} sm:text-sm`}
+          >
             Premier: {stats.premier}
           </Badge>
           {/* <Badge
@@ -137,7 +142,10 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
           <div>
             <div className="flex items-center gap-4 mb-6">
               <div className="relative">
-                <span className="text-xl font-bold" style={{ color: themeConfig.accent }}>
+                <span
+                  className="text-xl font-bold"
+                  style={{ color: themeConfig.accent }}
+                >
                   {stats.rating}
                 </span>
               </div>
@@ -173,7 +181,9 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
             <div className="grid grid-cols-3 gap-2">
               <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">K/D</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">{stats.kd}</p>
+                <p className="text-xl sm:text-2xl font-bold text-white">
+                  {stats.kd}
+                </p>
               </div>
               <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">K/R</p>
@@ -239,10 +249,11 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
                   {stats.winHistory.map((result, index) => (
                     <div
                       key={index}
-                      className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${result === "W"
-                        ? "bg-emerald-500 text-white"
-                        : "bg-red-500 text-white"
-                        }`}
+                      className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
+                        result === "W"
+                          ? "bg-emerald-500 text-white"
+                          : "bg-red-500 text-white"
+                      }`}
                     >
                       {result}
                     </div>

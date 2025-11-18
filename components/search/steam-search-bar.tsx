@@ -8,12 +8,7 @@ import { type ThemeConfig } from "@/contexts/theme-context";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import Link from "next/link";
 
 interface SteamSearchBarProps {
@@ -77,9 +72,11 @@ const formSchema = z.object({
     .refine(
       (val) => {
         // Accept Steam ID, URL, or username
-        return /^\d{17}$/.test(val) || // Steam ID
+        return (
+          /^\d{17}$/.test(val) || // Steam ID
           /steamcommunity\.com/.test(val) || // Steam URL
-          /^[a-zA-Z0-9_-]+$/.test(val); // Username
+          /^[a-zA-Z0-9_-]+$/.test(val)
+        ); // Username
       },
       { message: "Please enter a valid Steam profile URL or ID" }
     ),
@@ -110,12 +107,14 @@ export function SteamSearchBar({
   };
 
   // Combined error - either from form validation or external API error
-  const displayError = externalError || form.formState.errors.profileUrl?.message;
+  const displayError =
+    externalError || form.formState.errors.profileUrl?.message;
 
   return (
     <div
-      className={`w-full flex flex-col items-center transition-all duration-700 ${headerTransition ? "mt-0" : ""
-        }`}
+      className={`w-full flex flex-col items-center transition-all duration-700 ${
+        headerTransition ? "mt-0" : ""
+      }`}
     >
       {showHeader && (
         <div className="text-center space-y-4 mb-12">
@@ -145,13 +144,18 @@ export function SteamSearchBar({
               </span>
             </h1>
           </div>
-          <p className="text-gray-400 text-base -mt-2 sm:text-lg">Stats and Banned friends 0.o</p>
+          <p className="text-gray-400 text-base -mt-2 sm:text-lg">
+            Stats and Banned friends 0.o
+          </p>
         </div>
       )}
 
       <div className="w-full max-w-3xl ">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="profileUrl"
@@ -172,20 +176,28 @@ export function SteamSearchBar({
                         ease: "easeInOut",
                       }}
                     >
-                      <Link href="/" aria-label="Go to homepage" className="inline-block cursor-pointer">
-                        <span tabIndex={0} role="link">😎</span>
+                      <Link
+                        href="/"
+                        aria-label="Go to homepage"
+                        className="inline-block cursor-pointer"
+                      >
+                        <span tabIndex={0} role="link">
+                          😎
+                        </span>
                       </Link>
                     </motion.div>
                     <FormControl>
                       <input
                         type="text"
                         placeholder={
-                          ".../id/" + placeholder || "Enter Steam profile URL or ID..."
+                          ".../id/" + placeholder ||
+                          "Enter Steam profile URL or ID..."
                         }
-                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-8 sm:pl-10  focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 autofill:bg-zinc-900/30 autofill:text-white ${displayError
-                          ? "border-red-500/70 focus:border-red-500"
-                          : "border-zinc-700/50 focus:border-zinc-600/50"
-                          }`}
+                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-8 sm:pl-10  focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 autofill:bg-zinc-900/30 autofill:text-white ${
+                          displayError
+                            ? "border-red-500/70 focus:border-red-500"
+                            : "border-zinc-700/50 focus:border-zinc-600/50"
+                        }`}
                         disabled={loading}
                         {...field}
                       />
@@ -199,11 +211,12 @@ export function SteamSearchBar({
                         borderColor: themeConfig.border,
                       }}
                       onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor =
-                        themeConfig.accentHover)
+                        (e.currentTarget.style.backgroundColor =
+                          themeConfig.accentHover)
                       }
                       onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = themeConfig.accent)
+                        (e.currentTarget.style.backgroundColor =
+                          themeConfig.accent)
                       }
                     >
                       {loading ? (
@@ -240,7 +253,11 @@ export function SteamSearchBar({
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   {BADGE_EXAMPLES.map((text) => (
-                    <Badge key={text} variant="secondary" className={BADGE_CLASS}>
+                    <Badge
+                      key={text}
+                      variant="secondary"
+                      className={BADGE_CLASS}
+                    >
                       {text}
                     </Badge>
                   ))}

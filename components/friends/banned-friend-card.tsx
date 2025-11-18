@@ -18,7 +18,7 @@ export const SteamIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export function   BannedFriendCard({
+export function BannedFriendCard({
   friend,
   themeConfig,
   compact = false,

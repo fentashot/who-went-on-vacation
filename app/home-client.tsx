@@ -11,7 +11,11 @@ export function HomeClient() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { themeConfig } = useTheme();
-  const { mutateAsync: fetchProfile, isPending, error } = useFetchSteamProfile();
+  const {
+    mutateAsync: fetchProfile,
+    isPending,
+    error,
+  } = useFetchSteamProfile();
 
   // Mount animation
   useEffect(() => {

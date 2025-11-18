@@ -7,8 +7,6 @@ import Image from "next/image";
 import { FriendProfile } from "@/types/steam";
 import { SteamIcon } from "@/components/friends/banned-friend-card";
 
-
-
 export function UserProfileCard({ profile }: { profile: FriendProfile }) {
   const csstatsUrl = `https://csstats.gg/player/${profile.steamid}`;
 
@@ -107,7 +105,6 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
           className="flex items-center gap-2 h-fit px-3 py-2 rounded-md bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-sm text-white w-fit"
         >
           <SteamIcon className="w-5 h-5" />
-
         </a>
 
         {/* CS Stats */}
@@ -122,7 +119,6 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
 
         {/* FACEIT (disabled) - kept for future integration */}
       </div>
-
     </div>
   );
 }
