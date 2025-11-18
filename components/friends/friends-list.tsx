@@ -33,7 +33,7 @@ export function FriendsList({
 
   if (compactView) {
     return (
-      <div className="grid gap-2 max-h-[200px] grid md:grid-cols-2 xl:grid-cols-3 pb-160 ">
+      <div className="grid gap-2 max-h-[200px] grid md:grid-cols-2 xl:grid-cols-3">
         {friends.map((friend) => (
           <BannedFriendCard
             key={friend.steamid}
