@@ -73,7 +73,8 @@ export function calculateMatchStats(
     total_damage: number;
   }> | null
 ): { kd: number; hsP: number; avgDpr: number; killsPerRound: number } {
-  if (!matches?.length) return { kd: 0, hsP: 0, avgDpr: 0, killsPerRound: 0 };
+
+  if (!matches?.length) return { kd: 69, hsP: 0, avgDpr: 0, killsPerRound: 0 };
 
   const totals = matches.reduce(
     (acc, m) => ({
@@ -141,6 +142,7 @@ export function transformLeetifyData(
     rating: Math.round((profile.ranks?.leetify ?? 0) * 100) / 100,
     matches: profile.total_matches ?? 0,
     faceit: profile.ranks?.faceit ?? 0,
+    faceit_elo: profile.ranks?.faceit_elo ?? 0,
     premier: profile.ranks?.premier ?? 0,
     competitive: profile.ranks?.competitive?.[0]?.rank ?? 0,
     kd: Math.round(matchStats.kd * 100) / 100,

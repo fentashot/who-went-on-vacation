@@ -25,6 +25,37 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
 
   const leetifyUrl = `https://leetify.com/public/profile/${steamId}`;
 
+  // Determine badge color based on FACEIT ELO ranges.
+  // These ranges are approximate and map to visual tiers (higher = stronger).
+  const faceitBadgeClass = useMemo(() => {
+    const elo = Number(stats?.faceit_elo ?? 0);
+    if (!elo || elo <= 0) return "bg-black/10 border-zinc-700/50 text-white";
+    if (elo >= 2001) return "bg-black/10 border-red-500 text-red-300"; // top
+    if (elo >= 1751) return "bg-black/10 border-orange-400 text-orange-300";
+    if (elo >= 1531) return "bg-black/10 border-amber-400 text-amber-300";
+    if (elo >= 1351) return "bg-black/10 border-yellow-400 text-yellow-300";
+    if (elo >= 1201) return "bg-black/10 border-lime-400 text-lime-300";
+    if (elo >= 1051) return "bg-black/10 border-emerald-500 text-emerald-300";
+    if (elo >= 901) return "bg-black/10 border-sky-400 text-sky-300";
+    if (elo >= 751) return "bg-black/10 border-cyan-400 text-cyan-300";
+    if (elo >= 501) return "bg-black/10 border-blue-400 text-blue-300";
+    return "bg-black/10 border-zinc-700/50 text-white";
+  }, [stats?.faceit_elo]);
+
+  // Determine badge color for Premier points (approximate brackets)
+  const premierBadgeClass = useMemo(() => {
+    const pts = Number(stats?.premier ?? 0);
+    if (!pts || pts <= 0) return "bg-black/10 border-zinc-700/50 text-white";
+    if (pts >= 30000) return "bg-black/10 border-amber-400 text-amber-300"; // 30k+
+    if (pts >= 25000) return "bg-black/10 border-red-400 text-red-300"; // 25k-29,999
+    if (pts >= 20000) return "bg-black/10 border-pink-500 text-pink-300"; // 20k-24,999
+    if (pts >= 15000) return "bg-black/10 border-violet-500 text-violet-300"; // 15k-19,999
+    if (pts >= 10000) return "bg-black/10 border-indigo-500 text-indigo-300"; // 10k-14,999
+    if (pts >= 5000) return "bg-black/10 border-sky-400 text-sky-300"; // 5k-9,999
+    return "bg-black/10 border-zinc-700/50 text-white"; // <5k
+  }, [stats?.premier]);
+
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-3 gap-4">
@@ -37,6 +68,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
   }
 
   if (error || !stats) {
+
     return (
       <div className="grid grid-cols-3 gap-4">
         <div className="grid">
@@ -102,22 +134,22 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
           <div className="flex gap-2 mb-4">
             <Badge
               variant="outline"
-              className="bg-black/10 border-zinc-700/50 text-white text-sm"
+              className={`${faceitBadgeClass} text-sm`}
             >
-              FACEIT: {stats.faceit}
+              FACEIT: {stats.faceit_elo}
             </Badge>
             <Badge
               variant="outline"
-              className="bg-black/10 border-zinc-700/50 text-white text-sm"
+              className={`${premierBadgeClass} text-sm`}
             >
               Premier: {stats.premier}
             </Badge>
-            <Badge
+            {/* <Badge
               variant="outline"
               className="bg-black/10 border-zinc-700/50 text-white text-sm"
             >
               Competitive: {stats.competitive}
-            </Badge>
+            </Badge> */}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-end">
@@ -225,8 +257,8 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
                       <div
                         key={index}
                         className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${result === "W"
-                            ? "bg-emerald-500 text-white"
-                            : "bg-red-500 text-white"
+                          ? "bg-emerald-500 text-white"
+                          : "bg-red-500 text-white"
                           }`}
                       >
                         {result}

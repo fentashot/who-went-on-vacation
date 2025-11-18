@@ -33,7 +33,7 @@ export function FriendsList({
 
   if (compactView) {
     return (
-      <div className="gap-2 max-h-[200px] grid md:grid-cols-2 xl:grid-cols-3 pb-5">
+      <div className="grid gap-2 max-h-[200px] grid md:grid-cols-2 xl:grid-cols-3 pb-160 ">
         {friends.map((friend) => (
           <BannedFriendCard
             key={friend.steamid}
@@ -47,9 +47,9 @@ export function FriendsList({
   }
 
   return (
-    <div className="grid gap-3 min-h-[200px] grid-cols-1 lg:grid-cols-2">
+    <div className="grid gap-3 min-h-[200px] grid-cols-1 lg:grid-cols-2 ">
       {friends.map((friend) => (
-        <div key={friend.steamid}>
+        <div key={friend.steamid} >
           <BannedFriendCard friend={friend} themeConfig={themeConfig} />
         </div>
       ))}

@@ -83,6 +83,7 @@ export interface LeetifyDisplayStats {
   rating: number;
   matches: number;
   faceit: number;
+  faceit_elo: number;
   premier: number;
   competitive: number;
   kd: number;

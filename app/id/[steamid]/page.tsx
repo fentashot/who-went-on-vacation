@@ -23,6 +23,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       initialCompactView={compactView}
     >
       <PageClient steamid={steamid} />
+      
     </ThemeProvider>
   );
 }

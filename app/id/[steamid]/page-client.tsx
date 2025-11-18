@@ -100,7 +100,7 @@ export function PageClient({ steamid }: PageClientProps) {
 
   return (
     <div
-      className="min-h-screen bg-black text-white relative"
+      className=" bg-black text-white relative"
       suppressHydrationWarning
     >
       <ThemeBackground
@@ -109,7 +109,7 @@ export function PageClient({ steamid }: PageClientProps) {
         gridSize={gridSize}
       />
 
-      <div className="relative min-h-screen flex flex-col items-center py-10">
+      <div className="relative flex flex-col items-center py-10">
         {/* Top Controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
           <ViewToggle />
