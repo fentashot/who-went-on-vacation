@@ -33,6 +33,16 @@ interface PageClientProps {
   steamid: string;
 }
 
+/**
+* PageClient:
+* - useSteamProfile: retrieve profile + friends/bans (cached)
+* - render profile card, stats and friends list
+* - allow searching (prefetch + navigate)
+*
+* Caching, retries and refetch behavior are configured inside hooks
+* to keep component logic concise and predictable.
+*/
+
 export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
   const { themeConfig, gridSize } = useTheme();

@@ -2,6 +2,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { type ApiResponseSteam } from "@/types/steam";
 
 /**
+ * useSteamProfile
+ * ----------------
+ * Wrapper around React Query to fetch a Steam profile (including friends & bans).
+ * - Returns cached data for `staleTime` (30 minutes) to avoid repeated API hits.
+ * - `refetchOnMount: false` and `refetchOnWindowFocus: false` to keep UX stable
+ *   when users navigate or switch tabs.
+ * - Always returns the API response shape (even for private profiles) so UI
+ *   logic can handle empty friend lists gracefully.
+ */
+
+/**
  * Fetch Steam profile data
  */
 async function fetchSteamProfile(profileUrl: string): Promise<ApiResponseSteam> {

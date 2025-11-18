@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function LoadingSkeleton() {
@@ -33,8 +33,8 @@ export function LoadingSkeleton() {
     <div className="w-full max-w-7xl px-2 mx-auto">
       {/* Profile Skeleton */}
       <div className="grid grid-cols-3 gap-4 max-w-5xl mx-auto">
-        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100" />
-        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100 col-span-2" />
+        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-105 rounded-lg" />
+        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-105 col-span-2 rounded-lg" />
       </div>
 
       {/* Stats and Results Skeleton */}

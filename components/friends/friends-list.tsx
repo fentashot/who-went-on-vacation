@@ -48,7 +48,7 @@ export function FriendsList({
 
   return (
     <div className="grid gap-3 min-h-[200px] grid-cols-1 lg:grid-cols-2">
-      {friends.map((friend, index) => (
+      {friends.map((friend) => (
         <div key={friend.steamid}>
           <BannedFriendCard friend={friend} themeConfig={themeConfig} />
         </div>

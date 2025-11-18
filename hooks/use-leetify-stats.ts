@@ -2,6 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { type LeetifyDisplayStats } from "@/types/leetify";
 
 /**
+ * useLeetifyStats
+ * ----------------
+ * Fetch Leetify aggregated stats for a Steam ID. We intentionally:
+ * - Use a moderate `staleTime` (30m) to reduce requests to external services.
+ * - Disable refetch-on-mount/window-focus (set in the hook) so cached results
+ *   are reused across navigations.
+ * - Return `LeetifyDisplayStats | null` when a profile is not present on
+ *   Leetify (API returns `stats: null` in that case) to allow UI to render
+ *   a friendly fallback rather than an error.
+ */
+
+/**
  * Fetch Leetify stats
  */
 async function fetchLeetifyStats(steamId: string): Promise<LeetifyDisplayStats | null> {

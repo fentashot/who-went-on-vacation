@@ -95,7 +95,10 @@ const getCachedFriendList = unstable_cache(
 
       if (!response.ok) {
         // For private profiles, return empty array instead of throwing error
-        console.log(`Friend list private or unavailable for Steam ID: ${steamId}`);
+        // Keep a dev-only log for diagnosis, avoid logging in production
+        if (process.env.NODE_ENV === "development") {
+          console.log(`Friend list private or unavailable for Steam ID: ${steamId}`);
+        }
         return [];
       }
 

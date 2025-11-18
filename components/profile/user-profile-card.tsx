@@ -10,7 +10,6 @@ import { FriendProfile } from "@/types/steam";
 
 export function UserProfileCard({ profile }: { profile: FriendProfile }) {
   const csstatsUrl = `https://csstats.gg/player/${profile.steamid}`;
-  const faceitUrl = `https://www.faceit.com/en/search/player/${profile.personaname}`;
 
   return (
     <Card className="w-full bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden mx-auto">
@@ -119,16 +118,7 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
                 <span>CS Stats</span>
               </a>
 
-              {/* FACEIT
-              <a
-                href={faceitUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-sm text-white"
-              >
-                <Trophy className="w-4 h-4 text-amber-400" />
-                <span>FACEIT</span>
-              </a> */}
+              {/* FACEIT (disabled) - kept for future integration */}
             </div>
           </div>
         </div>
