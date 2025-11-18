@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { UserProfileCard } from "@/components/profile/user-profile-card";
 import { useLeetifyStats } from "@/hooks/use-leetify-stats";
 import { FriendProfile } from "@/types/steam";
+import Image from "next/image";
 
 interface LeetifyStatsProps {
   steamId: string;
@@ -97,23 +98,24 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
     <div className="max-w-3xl duration-500 mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl ">
       <CardContent className="p-10">
         <UserProfileCard profile={userProfile!} />
-        <div className="flex items-center sm:items-start justify-between mb-6">
-          <div className="flex items-center">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg md:text-xl font-bold text-white">
-                Leetify Statistics
-              </h3>
-            </div>
+        <div className="flex sm:items-start justify-between">
+          <div className="flex gap-2">
+            <h3 className="text-lg md:text-xl font-bold text-white">
+              Leetify Statistics
+            </h3>
           </div>
-          <a
-            href={leetifyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: themeConfig?.text }}
-            className="text-xs text-pink-400 hover:text-pink-300 transition-colors"
-          >
-            View Full Profile →
-          </a>
+          <div>
+            <a
+              href={leetifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: themeConfig?.text }}
+              className="text-xs text-pink-400 hover:text-pink-300 transition-colors"
+            >
+              <Image src="/Leetify.png" alt="Leetify Logo" width={100} height={40} />
+
+            </a>
+          </div>
         </div>
 
         <div className="flex gap-2 mb-4">

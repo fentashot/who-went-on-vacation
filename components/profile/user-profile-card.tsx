@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink, BarChart3 } from "lucide-react";
 import Image from "next/image";
 import { FriendProfile } from "@/types/steam";
+import { SteamIcon } from "@/components/friends/banned-friend-card";
 
 
 
@@ -12,9 +13,9 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
   const csstatsUrl = `https://csstats.gg/player/${profile.steamid}`;
 
   return (
-    <div className="grid grid-cols-2 gap-4 pb-6 mb-6 border-b border-zinc-700/50">
+    <div className="grid grid-cols-[1fr_auto] gap-4 pb-6 mb-6 border-b border-zinc-700/50">
       {/* Avatar & Basic Info */}
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-4 ">
         <div className="relative">
           <Image
             src={profile.avatarfull}
@@ -90,15 +91,16 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
 
           {/* Links Section */}
 
-      <div className="grid justify-items-end gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {/* Steam Profile */}
         <a
           href={profile.profileurl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-sm text-white w-fit"
+          className="flex items-center gap-2 h-fit px-3 py-2 rounded-md bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-sm text-white w-fit"
         >
-          <span>Steam</span>
+          <SteamIcon className="w-5 h-5" />
+
         </a>
 
         {/* CS Stats */}
@@ -106,9 +108,9 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
           href={csstatsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-sm text-white w-fit"
+          className="flex items-center gap-2 h-fit px-3 py-2 rounded-md bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors text-sm text-white w-fit"
         >
-          <span>CS Stats</span>
+          <BarChart3 className="w-5 h-5" />
         </a>
 
         {/* FACEIT (disabled) - kept for future integration */}

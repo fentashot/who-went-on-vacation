@@ -7,7 +7,7 @@ import { BarChart3 } from "lucide-react";
 import { type ThemeConfig } from "@/contexts/theme-context";
 import { FriendProfile } from "@/types/steam";
 
-const SteamIcon = ({ className }: { className?: string }) => (
+export const SteamIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
     viewBox="0 0 24 24"
