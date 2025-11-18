@@ -1,117 +1,84 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle } from "lucide-react";
-import type { LeetifyDisplayStats } from "@/types/leetify";
 import { useTheme } from "@/contexts/theme-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserProfileCard } from "@/components/profile/user-profile-card";
-import { useProfile } from "@/contexts/profile-context";
+import { useLeetifyStats } from "@/hooks/use-leetify-stats";
+import { FriendProfile } from "@/types/steam";
 
-export function LeetifyStats() {
-  const [stats, setStats] = useState<LeetifyDisplayStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface LeetifyStatsProps {
+  steamId: string;
+  userProfile?: FriendProfile;
+}
 
+export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
   const { themeConfig } = useTheme();
 
-  const { currentProfile } = useProfile();
+  // Memoize the steamId to prevent unnecessary re-renders
+  const memoizedSteamId = useMemo(() => steamId, [steamId]);
 
-  const steamid = currentProfile?.userProfile?.steamid;
+  const { data: stats, isLoading, error } = useLeetifyStats(memoizedSteamId);
 
-  useEffect(() => {
-    const fetchLeetifyStats = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const leetifyUrl = `https://leetify.com/public/profile/${steamId}`;
 
-        const response = await fetch("/api/leetify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ steamId: steamid }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(data.error || "Failed to fetch Leetify stats");
-        } else {
-          setStats(data.stats);
-          console.log(data);
-        }
-      } catch {
-        setError("Failed to connect to server");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeetifyStats();
-  }, [steamid]);
-
-  const leetifyUrl = `https://leetify.com/public/profile/${steamid}`;
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="grid grid-cols-3 gap-4">
         <div className="grid">
-          {currentProfile?.userProfile && (
-            <UserProfileCard profile={currentProfile.userProfile} />
-          )}
+          {userProfile && <UserProfileCard profile={userProfile} />}
         </div>
         <Skeleton className="col-span-2 bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-100" />
       </div>
     );
   }
 
-  if (error) {
+  if (error || !stats) {
     return (
       <div className="grid grid-cols-3 gap-4">
         <div className="grid">
-          {currentProfile?.userProfile && (
-            <UserProfileCard profile={currentProfile.userProfile} />
-          )}
+          {userProfile && <UserProfileCard profile={userProfile} />}
         </div>
         <Card className="col-span-2 bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden max-w-5xl">
           <CardContent className="p-12 flex flex-col items-center justify-center text-center">
-            <AlertCircle className="w-12 h-12 text-yellow-500 mb-4" />
-            <p className="text-gray-400 mb-2">{error}</p>
-            <a
-              href={leetifyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: themeConfig?.text }}
-              className={
-                "text-sm transition-colors" +
-                (themeConfig
-                  ? ` text-[${themeConfig.accent}] hover:text-[${themeConfig.accent}]`
-                  : "text-pink-400 hover:text-pink-300")
-              }
-            >
-              View Leetify Profile →
-            </a>
+            <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+            <h3 className="text-lg font-semibold text-red-400 mb-2">
+              Leetify Stats Unavailable
+            </h3>
+            <p className="text-gray-400 mb-2">
+              {error?.message || "Failed to load Leetify stats"}
+            </p>{" "}
+            <div className="space-x-3">
+              {/* <a
+                href={leetifyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: themeConfig?.text }}
+                className={
+                  "text-sm transition-colors inline-block" +
+                  (themeConfig
+                    ? ` text-[${themeConfig.accent}] hover:text-[${themeConfig.accent}]`
+                    : "text-pink-400 hover:text-pink-300")
+                }
+              >
+                View Leetify Profile →
+              </a> */}
+            </div>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  if (!stats) {
-    return null;
-  }
-
   return (
     <div className="grid grid-cols-3 gap-4">
       <div className="grid">
-        {currentProfile?.userProfile && (
-          <UserProfileCard profile={currentProfile.userProfile} />
-        )}
+        {userProfile && <UserProfileCard profile={userProfile} />}
       </div>
-      <div className="col-span-2 bg-zinc-900/30 border-zinc-800/50 border-1 hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-lg ">
+      <div className="col-span-2 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-lg ">
         <CardContent className="pt-8 pb-12 px-8">
           <div className="flex items-center sm:items-start justify-between mb-6">
             <div className="flex items-center">

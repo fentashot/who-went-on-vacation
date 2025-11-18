@@ -54,8 +54,6 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       });
       const data = await res.json();
 
-      console.log(data);
-
       if (res.ok && data.allFriends.length > 0) {
         setCurrentProfile(data);
         setError(null);

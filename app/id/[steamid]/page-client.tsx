@@ -6,7 +6,6 @@ import { ArrowUp, ArrowDown } from "lucide-react";
 
 // UI Components
 import { Card, CardContent } from "@/components/ui/card";
-import { UserProfileCard } from "@/components/profile/user-profile-card";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { SteamSearchBar } from "@/components/search/steam-search-bar";
 import { FriendsFilterToggle } from "@/components/friends/friends-filter-toggle";
@@ -18,8 +17,11 @@ import { GridSizeSlider } from "@/components/layout/grid-size-slider";
 import { ThemeSelector } from "@/components/layout/theme-selector";
 import { ThemeBackground } from "@/components/layout/theme-background";
 
-// Contexts & Types
-import { useProfile } from "@/contexts/profile-context";
+// Hooks & Types
+import {
+  useSteamProfile,
+  useFetchSteamProfile,
+} from "@/hooks/use-steam-profile";
 import { useTheme } from "@/contexts/theme-context";
 import { type SortOrder } from "@/types/steam";
 
@@ -34,9 +36,11 @@ interface PageClientProps {
 export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
   const { themeConfig, gridSize } = useTheme();
-  const { currentProfile, loading, error, fetchAndSetProfile } = useProfile();
 
-  console.log(currentProfile?.userProfile);
+  // React Query hooks
+  const { data: currentProfile, isLoading, error } = useSteamProfile(steamid);
+  const { mutateAsync: fetchProfile, isPending: isFetching } =
+    useFetchSteamProfile();
 
   // UI State
   const [mounted, setMounted] = useState(false);
@@ -50,18 +54,14 @@ export function PageClient({ steamid }: PageClientProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch profile on mount if needed
-  useEffect(() => {
-    if (steamid && !currentProfile && !error) {
-      fetchAndSetProfile(steamid);
-    }
-  }, [steamid, currentProfile, error, fetchAndSetProfile]);
-
   // Handlers
   const handleSearch = async (profileUrl: string) => {
-    const success = await fetchAndSetProfile(profileUrl);
-    if (success) {
+    try {
+      await fetchProfile(profileUrl);
       router.push(`/id/${profileUrl}`);
+    } catch (err) {
+      // Error is handled by React Query
+      console.error("Search failed:", err);
     }
   };
 
@@ -76,6 +76,17 @@ export function PageClient({ steamid }: PageClientProps) {
     () => filterAndSortFriends(friendsToDisplay, searchQuery, sortOrder),
     [friendsToDisplay, searchQuery, sortOrder]
   );
+
+  // Memoize leetify stats props to prevent re-renders
+  const leetifyStatsProps = useMemo(() => {
+    if (!currentProfile?.userProfile?.steamid) return null;
+    return {
+      steamId: currentProfile.userProfile.steamid,
+      userProfile: currentProfile.userProfile,
+    };
+  }, [currentProfile]);
+
+  const loading = isLoading || isFetching;
 
   return (
     <div
@@ -98,13 +109,12 @@ export function PageClient({ steamid }: PageClientProps) {
 
         {/* Main Content */}
         <div className="w-full max-w-7xl px-4 mt-8">
-
           {/* Search Bar */}
           <div className="mb-10 mx-auto space-y-10 max-w-3xl">
             <SteamSearchBar
               onSearch={handleSearch}
               loading={loading}
-              error={error}
+              error={error && !currentProfile ? error.message : null}
               themeConfig={themeConfig}
               showHeader={false}
               showExamples={false}
@@ -114,20 +124,15 @@ export function PageClient({ steamid }: PageClientProps) {
 
           {/* Loading State */}
           {loading && !currentProfile && <LoadingSkeleton />}
-          {/* <LoadingSkeleton /> */}
+
           {/* Profile Results */}
           {currentProfile && (
             <div className="w-full space-y-14 mx-auto">
               <div className="max-w-5xl mx-auto">
-                {/* User Profile Card */}
-                {/* <div className="grid">
-                  {currentProfile.userProfile && (
-                    <UserProfileCard profile={currentProfile.userProfile} />
-                  )}
-                </div> */}
-
-                {currentProfile.userProfile?.steamid && (
+                {leetifyStatsProps && (
                   <LeetifyStats
+                    steamId={leetifyStatsProps.steamId}
+                    userProfile={leetifyStatsProps.userProfile}
                   />
                 )}
               </div>
@@ -151,7 +156,36 @@ export function PageClient({ steamid }: PageClientProps) {
                 </div>
 
                 {/* Friends Content */}
-                {friendsToDisplay.length > 0 ? (
+                {currentProfile.totalFriends === 0 &&
+                  currentProfile.allFriends.length === 0 ? (
+                  // Private profile or no friends
+                  <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
+                    <CardContent className="p-12 text-center">
+                      <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-yellow-100 rounded-full">
+                        <svg
+                          className="w-8 h-8 text-yellow-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-semibold text-yellow-400 mb-2">
+                        Friends List Private
+                      </h3>
+                      <p className="text-gray-400">
+                        This Steam profile has a private friends list or no
+                        friends added yet.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : friendsToDisplay.length > 0 ? (
                   <>
                     {/* Search & Sort Controls */}
                     <div className="mb-6 flex flex-col sm:flex-row gap-3 ">
@@ -196,15 +230,14 @@ export function PageClient({ steamid }: PageClientProps) {
                     />
                   </>
                 ) : (
-                  currentProfile.totalFriends !== undefined && (
-                    <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
-                      <CardContent className="p-12 text-center">
-                        <p className="text-gray-400 text-lg">
-                          🎉 None of your friends have VAC or game bans!
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )
+                  // Has friends but none match current filter (banned/all)
+                  <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
+                    <CardContent className="p-12 text-center">
+                      <p className="text-gray-400 text-lg">
+                        🎉 None of your friends have VAC or game bans!
+                      </p>
+                    </CardContent>
+                  </Card>
                 )}
               </div>
             </div>

@@ -28,10 +28,11 @@ export async function POST(request: NextRequest) {
     const profile = await getCachedLeetifyProfile(steamId);
 
     if (!profile) {
-      return NextResponse.json(
-        { error: "Profile not found on Leetify" },
-        { status: 404 }
-      );
+      // Return success with null stats instead of error to enable caching
+      return NextResponse.json({
+        stats: null,
+        message: "Profile not found on Leetify"
+      });
     }
 
     const matches = await getCachedLeetifyMatches(steamId);

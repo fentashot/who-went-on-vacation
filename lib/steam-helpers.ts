@@ -94,9 +94,9 @@ const getCachedFriendList = unstable_cache(
       );
 
       if (!response.ok) {
-        throw new Error(
-          "Failed to fetch friend list. Profile might be private."
-        );
+        // For private profiles, return empty array instead of throwing error
+        console.log(`Friend list private or unavailable for Steam ID: ${steamId}`);
+        return [];
       }
 
       const contentType = response.headers.get("content-type");
@@ -113,7 +113,9 @@ const getCachedFriendList = unstable_cache(
         ) || []
       );
     } catch (error) {
-      throw error;
+      console.error("Error fetching friend list:", error);
+      // Return empty array for private profiles or other errors
+      return [];
     }
   },
   ["friend-list"],

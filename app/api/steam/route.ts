@@ -38,9 +38,7 @@ export async function POST(request: NextRequest) {
         { error: "Profile URL is required" },
         { status: 400 }
       );
-    }
-
-    // Extract Steam ID from URL
+    }    // Extract Steam ID from URL
     let steamId = extractSteamId(profileUrl);
 
     // If it's a vanity URL, resolve it
@@ -106,6 +104,7 @@ export async function POST(request: NextRequest) {
       allFriends,
       bannedFriends,
     });
+
   } catch (error) {
     console.error("Error processing request:", error);
     return NextResponse.json(

@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { SteamSearchBar } from "@/components/search/steam-search-bar";
 import { ThemeBackground } from "@/components/layout/theme-background";
 import { useTheme } from "@/contexts/theme-context";
-import { useProfile } from "@/contexts/profile-context";
+import { useFetchSteamProfile } from "@/hooks/use-steam-profile";
 
 export function HomeClient() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { themeConfig } = useTheme();
-  const { loading, error, fetchAndSetProfile, clearError } = useProfile();
+  const { mutateAsync: fetchProfile, isPending, error } = useFetchSteamProfile();
 
   // Mount animation
   useEffect(() => {
@@ -20,10 +20,12 @@ export function HomeClient() {
   }, []);
 
   const handleSearch = async (profileUrl: string) => {
-    clearError();
-    const success = await fetchAndSetProfile(profileUrl);
-    if (success) {
+    try {
+      await fetchProfile(profileUrl);
       router.push(`/id/${profileUrl}`);
+    } catch (err) {
+      // Error is handled by React Query and displayed in SteamSearchBar
+      console.error("Search failed:", err);
     }
   };
 
@@ -35,8 +37,8 @@ export function HomeClient() {
         <div className="w-full flex flex-col items-center mt-[30vh]">
           <SteamSearchBar
             onSearch={handleSearch}
-            loading={loading}
-            error={error}
+            loading={isPending}
+            error={error?.message ?? null}
             themeConfig={themeConfig}
             showExamples={true}
           />
