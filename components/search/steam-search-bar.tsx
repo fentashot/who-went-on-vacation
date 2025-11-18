@@ -14,6 +14,7 @@ import {
   FormField,
   FormItem,
 } from "@/components/ui/form";
+import Link from "next/link";
 
 interface SteamSearchBarProps {
   onSearch: (profileUrl: string) => void | Promise<void>;
@@ -158,7 +159,8 @@ export function SteamSearchBar({
                 <FormItem>
                   <div className="flex relative">
                     <motion.div
-                      className="absolute left-6 -top-7 text-4xl z-20 pointer-events-none"
+                      // allow pointer events so the inner Link is clickable
+                      className="absolute left-6 -top-7 text-4xl z-20"
                       animate={{
                         y: [0, -10, 0],
                         rotate: [-5, 5, -5],
@@ -170,7 +172,9 @@ export function SteamSearchBar({
                         ease: "easeInOut",
                       }}
                     >
-                      😎
+                      <Link href="/" aria-label="Go to homepage" className="inline-block cursor-pointer">
+                        <span tabIndex={0} role="link">😎</span>
+                      </Link>
                     </motion.div>
                     <FormControl>
                       <input

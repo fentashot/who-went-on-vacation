@@ -10,7 +10,7 @@ export function ViewToggle() {
   return (
     <Button
       onClick={() => setCompactView(!compactView)}
-      className="flex items-center gap-2 bg-black backdrop-blur-md border border-zinc-700/50 rounded-lg px-3 py-2 focus:bg-black hover:bg-black"
+      className="flex items-center gap-2 cursor-pointer bg-black backdrop-blur-md border border-zinc-700/50 rounded-lg px-3 py-2 focus:bg-black hover:bg-black"
     >
       {compactView ? (
         <>

@@ -53,7 +53,7 @@ export function FriendsFilterToggle({
       {/* Total Friends Button */}
       <button
         onClick={() => onToggle(false)}
-        className="px-4 py-2 backdrop-blur w-52 text-sm transition-all duration-300 border rounded-lg flex items-center justify-center"
+        className="px-4 py-2 cursor-pointer backdrop-blur w-52 text-sm transition-all duration-300 border rounded-lg flex items-center justify-center"
         style={
           !showOnlyBanned
             ? {
@@ -73,7 +73,7 @@ export function FriendsFilterToggle({
       {/* With Bans Button */}
       <button
         onClick={() => onToggle(true)}
-        className="px-4 py-2 backdrop-blur-sm w-52 text-sm transition-all duration-300 border rounded-lg flex items-center justify-center"
+        className="px-4 py-2 cursor-pointer backdrop-blur-sm w-52 text-sm transition-all duration-300 border rounded-lg flex items-center justify-center"
         style={
           showOnlyBanned
             ? {

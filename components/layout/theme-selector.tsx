@@ -27,10 +27,9 @@ export function ThemeSelector() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="bg-black/10 border-zinc-700/50 text-white hover:bg-black/30 hover:text-white backdrop-blur-sm"
+          className="bg-black/10 cursor-pointer border-zinc-700/50 text-white hover:bg-black/30 hover:text-white backdrop-blur-sm"
         >
           <Palette className="w-4 h-4" />
-          <span className="hidden sm:inline mr-2">Theme:</span>
           <div
             className="w-4 h-4 rounded-full border border-white/30 transition-colors duration-500"
             style={{ backgroundColor: currentThemeData.color }}
@@ -52,7 +51,7 @@ export function ThemeSelector() {
                 className="w-5 h-5 rounded-full border border-white/30 transition-colors duration-300"
                 style={{ backgroundColor: theme.color }}
               />
-              <span className="flex-1">{theme.label}</span>
+              <span className="flex-1 hover:text-white text-sm font-medium">{theme.label}</span>
               {currentTheme === theme.name && (
                 <Check className="w-4 h-4 text-white" />
               )}
