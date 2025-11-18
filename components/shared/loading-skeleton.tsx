@@ -32,9 +32,8 @@ export function LoadingSkeleton() {
   return (
     <div className="w-full max-w-7xl px-2 mx-auto">
       {/* Profile Skeleton */}
-      <div className="grid grid-cols-3 gap-4 max-w-5xl mx-auto">
-        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-105 rounded-lg" />
-        <Skeleton className="bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden min-w-full h-105 col-span-2 rounded-lg" />
+      <div>
+        <Skeleton className="max-w-3xl mx-auto col-span-2 bg-zinc-900/40 border-zinc-800/50 backdrop-blur-md overflow-hidden h-116 rounded-2xl " />
       </div>
 
       {/* Stats and Results Skeleton */}
