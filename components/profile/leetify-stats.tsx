@@ -62,7 +62,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
         {/* <div className="grid">
           {userProfile && <UserProfileCard profile={userProfile} />}
         </div> */}
-        <div className="p-10 max-w-3xl h-116 mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
+        <div className="p-5 sm:p-10 max-w-3xl h-116 mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
           <UserProfileCard profile={userProfile!} />
           <CardContent className="flex justify-center items-center flex-col text-center mt-[12vh]">
             <LoaderCircle className="animate-spin w-12 h-12 text-zinc-600/20 mb-4" />
@@ -78,14 +78,14 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
         {/* <div className="grid">
           {userProfile && <UserProfileCard profile={userProfile} />}
         </div> */}
-        <div className="p-10 max-w-3xl mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
+        <div className="p-5 sm:p-10 max-w-3xl mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
           <UserProfileCard profile={userProfile!} />
           <CardContent className="flex justify-center items-center flex-col text-center">
-            <AlertCircle className="w-12 h-12 text-red-500 mb-4 " />
-            <h3 className="text-lg font-semibold text-red-400 mb-2">
+            <AlertCircle className="w-10 h-10 text-red-500 mb-2 " />
+            <h3 className="text-lg font-semibold text-red-400 mb-1">
               Leetify Stats Unavailable
             </h3>
-            <p className="text-gray-400 mb-2">
+            <p className="text-gray-400">
               {error?.message || "Failed to load Leetify stats"}
             </p>{" "}
           </CardContent>
@@ -96,12 +96,12 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
 
   return (
     <div className="max-w-3xl duration-500 mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl ">
-      <CardContent className="p-10">
+      <CardContent className="p-5 sm:p-10">
         <UserProfileCard profile={userProfile!} />
         <div className="flex sm:items-start justify-between">
           <div className="flex gap-2">
-            <h3 className="text-lg md:text-xl font-bold text-white">
-              Leetify Statistics
+            <h3 className="text-2xl font-bold text-white">
+              Stats
             </h3>
           </div>
           <div>
@@ -119,10 +119,10 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
         </div>
 
         <div className="flex gap-2 mb-4">
-          <Badge variant="outline" className={`${faceitBadgeClass} text-sm`}>
+          <Badge variant="outline" className={`${faceitBadgeClass} sm:text-sm`}>
             FACEIT: {stats.faceit_elo}
           </Badge>
-          <Badge variant="outline" className={`${premierBadgeClass} text-sm`}>
+          <Badge variant="outline" className={`${premierBadgeClass} sm:text-sm`}>
             Premier: {stats.premier}
           </Badge>
           {/* <Badge
@@ -137,11 +137,9 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
           <div>
             <div className="flex items-center gap-4 mb-6">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full border-4 border-emerald-500 flex items-center justify-center">
-                  <span className="text-xl font-bold text-emerald-400">
-                    {stats.rating}
-                  </span>
-                </div>
+                <span className="text-xl font-bold" style={{ color: themeConfig.accent }}>
+                  {stats.rating}
+                </span>
               </div>
               <div>
                 <p className="text-sm text-gray-400">Leetify Rating</p>
@@ -173,57 +171,63 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
 
           <div className="space-y-2">
             <div className="grid grid-cols-3 gap-2">
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">K/D</p>
-                <p className="text-2xl font-bold text-white">{stats.kd}</p>
+                <p className="text-xl sm:text-2xl font-bold text-white">{stats.kd}</p>
               </div>
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">K/R</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.killsPerRound}
                 </p>
               </div>
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">Winrate</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.winrate}%
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">HS%</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.headAccuracy}%
                 </p>
               </div>
 
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">Spotted Acc</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.spottedAccuracy}%
                 </p>
               </div>
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">Spray Acc</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.sprayAccuracy}%
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">TTD</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.timeToDamage}
                 </p>
               </div>
-              <div className="bg-zinc-800/50 rounded-lg p-3">
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">DPR</p>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xl sm:text-2xl font-bold text-white">
                   {stats.damagePerRound}
+                </p>
+              </div>
+              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                <p className="text-xs text-gray-400 mb-1">Preaim</p>
+                <p className="text-xl sm:text-2xl font-bold text-white">
+                  {stats.preaim}
                 </p>
               </div>
             </div>

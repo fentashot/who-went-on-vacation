@@ -15,7 +15,7 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
   return (
     <div className="grid grid-cols-[1fr_auto] gap-4 pb-6 mb-6 border-b border-zinc-700/50">
       {/* Avatar & Basic Info */}
-      <div className="flex items-start gap-4 ">
+      <div className="flex items-start gap-2 ">
         <div className="relative">
           <Image
             src={profile.avatarfull}
@@ -27,8 +27,15 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
           />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-white mb-2 gap-2">
-            {profile.personaname}
+          <h3 className="text-xl hidden sm:block font-bold text-white mb-2 gap-2">
+            {profile.personaname.length > 28
+              ? profile.personaname.slice(0, 25) + "..."
+              : profile.personaname}
+          </h3>
+          <h3 className="text-md sm:hidden font-bold text-white mb-2 gap-2 ">
+            {profile.personaname.length > 20
+              ? profile.personaname.slice(0, 17) + "..."
+              : profile.personaname}
           </h3>
           <div className="flex flex-wrap gap-2 mb-3">
             {profile.VACBanned && (
@@ -91,7 +98,7 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
 
           {/* Links Section */}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid sm:grid-cols-2 gap-2">
         {/* Steam Profile */}
         <a
           href={profile.profileurl}

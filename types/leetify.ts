@@ -87,6 +87,7 @@ export interface LeetifyDisplayStats {
   premier: number;
   competitive: number;
   kd: number;
+  preaim: number;
   headAccuracy: number;
   winrate: number;
   killsPerRound: number;

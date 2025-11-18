@@ -29,8 +29,8 @@ interface SteamSearchBarProps {
 
 const BADGE_EXAMPLES = [
   "76561198012345678",
-  "https://steamcommunity.com/id/username",
   "username",
+  "https://steamcommunity.com/id/username",
 ];
 const BADGE_CLASS =
   "bg-zinc-900/20 hover:bg-zinc-800/30 text-gray-300 border-zinc-700/50 text-xs";
@@ -119,7 +119,7 @@ export function SteamSearchBar({
     >
       {showHeader && (
         <div className="text-center space-y-4 mb-12">
-          <div className="flex items-center justify-center gap-3 flex-wrap">
+          <div className="flex items-center justify-center gap-2 flex-wrap">
             <SmilePlus
               className="w-10 h-10 transition-colors duration-700"
               style={{ color: themeConfig.text }}
@@ -129,7 +129,7 @@ export function SteamSearchBar({
                 className="transition-colors duration-700"
                 style={{ color: themeConfig.text }}
               >
-                Really, 
+                Really,
               </span>{" "}
               <span className="text-white">
                 cool search
@@ -145,11 +145,11 @@ export function SteamSearchBar({
               </span>
             </h1>
           </div>
-          <p className="text-gray-400 text-lg">Stats and Banned friends 0.o</p>
+          <p className="text-gray-400 text-base -mt-2 sm:text-lg">Stats and Banned friends 0.o</p>
         </div>
       )}
 
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-3xl ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormField
@@ -182,7 +182,7 @@ export function SteamSearchBar({
                         placeholder={
                           ".../id/" + placeholder || "Enter Steam profile URL or ID..."
                         }
-                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-10 pr-8 focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 autofill:bg-zinc-900/30 autofill:text-white ${displayError
+                        className={`w-full border-r-0 h-14 bg-zinc-900/30 border-2 pl-8 sm:pl-10  focus:ring-0 focus:outline-none text-white placeholder:text-gray-500 text-md backdrop-blur-md rounded-2xl rounded-e-none transition-all duration-500 autofill:bg-zinc-900/30 autofill:text-white ${displayError
                           ? "border-red-500/70 focus:border-red-500"
                           : "border-zinc-700/50 focus:border-zinc-600/50"
                           }`}

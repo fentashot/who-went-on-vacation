@@ -112,13 +112,13 @@ export function PageClient({ steamid }: PageClientProps) {
       <div className="relative flex flex-col items-center py-10">
         {/* Top Controls */}
         <div className="absolute top-4 right-4 z-10 flex items-center gap-3">
-          <ViewToggle />
           <GridSizeSlider />
+          <ViewToggle />
           <ThemeSelector />
         </div>
 
         {/* Main Content */}
-        <div className="w-full max-w-7xl px-4 mt-8">
+        <div className="w-full max-w-7xl px-2 mt-8">
           {/* Search Bar */}
           <div className="mb-10 mx-auto space-y-10 max-w-3xl">
             <SteamSearchBar
@@ -148,10 +148,10 @@ export function PageClient({ steamid }: PageClientProps) {
               </div>
 
               {/* Friends Section */}
-              <div className="space-y-10">
+              <div className="space-y-5">
                 {/* Section Header */}
                 <div className="text-center">
-                  <h2 className="text-2xl font-bold text-white mb-4">
+                  <h2 className="text-2xl font-bold text-white mb-2 px-2">
                     {currentProfile.message}
                   </h2>
                   {currentProfile.totalFriends !== undefined && (
@@ -198,16 +198,15 @@ export function PageClient({ steamid }: PageClientProps) {
                 ) : friendsToDisplay.length > 0 ? (
                   <>
                     {/* Search & Sort Controls */}
-                    <div className="mb-6 flex flex-col sm:flex-row gap-3 ">
+                    <div className="mb-4 flex flex-row gap-1 ">
                       <FriendsSearchBar
                         value={searchQuery}
                         onChange={setSearchQuery}
                       />
-                      <div className="flex gap-2">
+                      <div className="flex gap-1">
                         <SortButton
                           order="newest"
                           icon={ArrowUp}
-                          label="Newest"
                           currentSortOrder={sortOrder}
                           onSort={setSortOrder}
                           themeConfig={themeConfig}
@@ -215,7 +214,6 @@ export function PageClient({ steamid }: PageClientProps) {
                         <SortButton
                           order="oldest"
                           icon={ArrowDown}
-                          label="Oldest"
                           currentSortOrder={sortOrder}
                           onSort={setSortOrder}
                           themeConfig={themeConfig}

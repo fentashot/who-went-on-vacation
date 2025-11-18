@@ -166,6 +166,29 @@
     linear-gradient(to bottom, var(--theme-grid-color) 1px, transparent 1px);
   background-size: 18px 18px;
   mask-image: radial-gradient(
+    ellipse 600px 700px at center,
+    black 0%,
+    black 25%,
+    transparent 65%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 600px 700px at center,
+    black 0%,
+    black 25%,
+    transparent 65%
+  );
+  transition: opacity 1.2s ease-in-out;
+}
+
+.background-grid-large {
+  background-image: linear-gradient(
+      to right,
+      var(--theme-grid-color) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--theme-grid-color) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(
     ellipse 1200px 1000px at center,
     black 0%,
     black 25%,
@@ -180,7 +203,20 @@
   transition: opacity 1.2s ease-in-out;
 }
 
+
 .background-gradient {
+  background: radial-gradient(
+    ellipse 800px 600px at center,
+    var(--theme-gradient-from) 0%,
+    var(--theme-gradient-via) 20%,
+    var(--theme-gradient-via) 35%,
+    var(--theme-gradient-to) 50%,
+    transparent 70%
+  );
+  transition: opacity 1.2s ease-in-out;
+}
+
+.background-gradient-large {
   background: radial-gradient(
     ellipse 1200px 1000px at center,
     var(--theme-gradient-from) 0%,

@@ -26,9 +26,8 @@ export function ThemeBackground({
       }
     >
       <div
-        className={`absolute inset-0 background-grid transition-opacity duration-800 ${
-          mounted ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 hidden md:block background-grid-large transition-opacity duration-800 ${mounted ? "opacity-100" : "opacity-0"
+          }`}
         style={
           gridSize
             ? { backgroundSize: `${gridSize}px ${gridSize}px` }
@@ -37,9 +36,23 @@ export function ThemeBackground({
         suppressHydrationWarning
       />
       <div
-        className={`absolute inset-0 background-gradient transition-opacity duration-800 ${
-          mounted ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 background-grid transition-opacity duration-800 ${mounted ? "opacity-100" : "opacity-0"
+          }`}
+        style={
+          gridSize
+            ? { backgroundSize: `${gridSize}px ${gridSize}px` }
+            : undefined
+        }
+        suppressHydrationWarning
+      />
+      <div
+        className={`absolute inset-0  background-gradient-large hidden md:block transition-opacity duration-800 ${mounted ? "opacity-100" : "opacity-0"
+          }`}
+        suppressHydrationWarning
+      />
+      <div
+        className={`absolute inset-0 md:hidden background-gradient transition-opacity duration-800 ${mounted ? "opacity-100" : "opacity-0"
+          }`}
         suppressHydrationWarning
       />
     </div>

@@ -146,6 +146,7 @@ export function transformLeetifyData(
     premier: profile.ranks?.premier ?? 0,
     competitive: profile.ranks?.competitive?.[0]?.rank ?? 0,
     kd: Math.round(matchStats.kd * 100) / 100,
+    preaim: Math.round(profile.stats?.preaim * 100) / 100 || 0,
     headAccuracy: Math.round(matchStats.hsP),
     winrate: Math.round((profile.winrate ?? 0) * 100),
     killsPerRound: Math.round(matchStats.killsPerRound * 100) / 100,

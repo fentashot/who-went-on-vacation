@@ -105,7 +105,7 @@ export function   BannedFriendCard({
         />
         <div className="flex-1 min-w-0 flex flex-col ">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-xl font-bold text-white truncate">
+            <h3 className="text-lg sm:text-xl font-bold text-white truncate">
               {friend.personaname}
             </h3>
             <div className="flex gap-1 shrink-0">

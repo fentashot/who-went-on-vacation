@@ -34,7 +34,7 @@ export function HomeClient() {
       <ThemeBackground mounted={mounted} themeConfig={themeConfig} />
 
       <div className="relative min-h-screen flex flex-col items-center">
-        <div className="w-full flex flex-col items-center mt-[30vh]">
+        <div className="w-full flex flex-col items-center mt-[30vh] px-2">
           <SteamSearchBar
             onSearch={handleSearch}
             loading={isPending}
