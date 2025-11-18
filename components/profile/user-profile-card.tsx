@@ -12,9 +12,9 @@ export function UserProfileCard({ profile }: { profile: FriendProfile }) {
   const csstatsUrl = `https://csstats.gg/player/${profile.steamid}`;
 
   return (
-    <Card className="w-full bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden mx-auto">
+    <Card className="w-full max-h-fit bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md overflow-hidden mx-auto">
       <CardContent>
-        <div className="flex flex-col gap-4">
+        <div className="flex xl:flex-col gap-4">
           {/* Avatar & Basic Info */}
           <div className="flex items-start gap-4">
             <div className="relative">

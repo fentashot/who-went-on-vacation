@@ -106,12 +106,12 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-4">
-      <div className="grid">
+    <div className="grid xl:grid-cols-3 gap-4">
+      <div className="grid xl:col-span-1">
         {userProfile && <UserProfileCard profile={userProfile} />}
       </div>
-      <div className="col-span-2 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-lg ">
-        <CardContent className="pt-8 pb-12 px-8">
+      <div className="w-full mx-auto xl:col-span-2 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-lg ">
+        <CardContent className="pt-8 pb-12 px-8 ">
           <div className="flex items-center sm:items-start justify-between mb-6">
             <div className="flex items-center">
               <div className="flex items-center gap-2">

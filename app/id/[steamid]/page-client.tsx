@@ -138,7 +138,7 @@ export function PageClient({ steamid }: PageClientProps) {
           {/* Profile Results */}
           {currentProfile && (
             <div className="w-full space-y-14 mx-auto">
-              <div className="max-w-5xl mx-auto">
+              <div className="max-w-6xl mx-auto">
                 {leetifyStatsProps && (
                   <LeetifyStats
                     steamId={leetifyStatsProps.steamId}

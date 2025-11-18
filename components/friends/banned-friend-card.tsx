@@ -18,7 +18,7 @@ const SteamIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export function BannedFriendCard({
+export function   BannedFriendCard({
   friend,
   themeConfig,
   compact = false,
@@ -62,11 +62,11 @@ export function BannedFriendCard({
                 : friend.personaname}
             </h3>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
             {friend.VACBanned && (
               <Badge
                 variant="destructive"
-                className="bg-red-900/30 text-red-400 border-red-800/50 text-xs px-2 py-0"
+                className="bg-red-900/30 text-red-400 border-red-800/50 text-xs px-1.5 py-0.5"
               >
                 VAC
               </Badge>
