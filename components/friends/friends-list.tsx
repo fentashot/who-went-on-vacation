@@ -4,24 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BannedFriendCard } from "@/components/friends/banned-friend-card";
 import { type ThemeConfig } from "@/contexts/theme-context";
 import { useTheme } from "@/contexts/theme-context";
-
-export interface BannedFriend {
-  steamid: string;
-  personaname: string;
-  profileurl: string;
-  avatar: string;
-  avatarmedium: string;
-  avatarfull: string;
-  VACBanned: boolean;
-  NumberOfVACBans: number;
-  NumberOfGameBans: number;
-  DaysSinceLastBan: number;
-  CommunityBanned: boolean;
-  EconomyBan: string;
-}
+import { FriendProfile } from "@/types/steam";
 
 interface FriendsListProps {
-  friends: BannedFriend[];
+  friends: FriendProfile[];
   searchQuery: string;
   themeConfig: ThemeConfig;
 }

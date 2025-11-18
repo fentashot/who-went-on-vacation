@@ -5,21 +5,7 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3 } from "lucide-react";
 import { type ThemeConfig } from "@/contexts/theme-context";
-
-interface BannedFriend {
-  steamid: string;
-  personaname: string;
-  profileurl: string;
-  avatar: string;
-  avatarmedium: string;
-  avatarfull: string;
-  VACBanned: boolean;
-  NumberOfVACBans: number;
-  NumberOfGameBans: number;
-  DaysSinceLastBan: number;
-  CommunityBanned: boolean;
-  EconomyBan: string;
-}
+import { FriendProfile } from "@/types/steam";
 
 const SteamIcon = ({ className }: { className?: string }) => (
   <svg
@@ -37,7 +23,7 @@ export function BannedFriendCard({
   themeConfig,
   compact = false,
 }: {
-  friend: BannedFriend;
+  friend: FriendProfile;
   themeConfig?: ThemeConfig;
   compact?: boolean;
 }) {

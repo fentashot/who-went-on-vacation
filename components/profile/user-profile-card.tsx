@@ -2,29 +2,13 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, BarChart3, Trophy } from "lucide-react";
+import { ExternalLink, BarChart3 } from "lucide-react";
 import Image from "next/image";
+import { FriendProfile } from "@/types/steam";
 
-interface UserProfile {
-  steamid: string;
-  personaname: string;
-  profileurl: string;
-  avatar: string;
-  avatarmedium: string;
-  avatarfull: string;
-  VACBanned: boolean;
-  NumberOfVACBans: number;
-  NumberOfGameBans: number;
-  DaysSinceLastBan: number;
-  CommunityBanned: boolean;
-  EconomyBan: string;
-}
 
-interface UserProfileCardProps {
-  profile: UserProfile;
-}
 
-export function UserProfileCard({ profile }: UserProfileCardProps) {
+export function UserProfileCard({ profile }: { profile: FriendProfile }) {
   const csstatsUrl = `https://csstats.gg/player/${profile.steamid}`;
   const faceitUrl = `https://www.faceit.com/en/search/player/${profile.personaname}`;
 
