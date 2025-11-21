@@ -74,7 +74,7 @@ export function calculateMatchStats(
   }> | null
 ): { kd: number; hsP: number; avgDpr: number; killsPerRound: number } {
 
-  if (!matches?.length) return { kd: 69, hsP: 0, avgDpr: 0, killsPerRound: 0 };
+  if (!matches?.length) return { kd: 0, hsP: 0, avgDpr: 0, killsPerRound: 0 };
 
   const totals = matches.reduce(
     (acc, m) => ({

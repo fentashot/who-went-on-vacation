@@ -178,18 +178,22 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
 
           <div className="space-y-2">
             <div className="grid grid-cols-3 gap-2">
-              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
-                <p className="text-xs text-gray-400 mb-1">K/D</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {stats.kd}
-                </p>
-              </div>
-              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
-                <p className="text-xs text-gray-400 mb-1">K/R</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {stats.killsPerRound}
-                </p>
-              </div>
+              {stats.kd !== 0 && (
+                <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                  <p className="text-xs text-gray-400 mb-1">K/D</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {stats.kd}
+                  </p>
+                </div>
+              )}
+              {stats.killsPerRound !== 0 && (
+                <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                  <p className="text-xs text-gray-400 mb-1">K/R</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {stats.killsPerRound}
+                  </p>
+                </div>
+              )}
               <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">Winrate</p>
                 <p className="text-xl sm:text-2xl font-bold text-white">
@@ -199,25 +203,31 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
-                <p className="text-xs text-gray-400 mb-1">HS%</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {stats.headAccuracy}%
-                </p>
-              </div>
+              {stats.headAccuracy !== 0 && (
+                <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                  <p className="text-xs text-gray-400 mb-1">HS%</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {stats.headAccuracy}%
+                  </p>
+                </div>
+              )}
 
-              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
-                <p className="text-xs text-gray-400 mb-1">Spotted Acc</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {stats.spottedAccuracy}%
-                </p>
-              </div>
-              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
-                <p className="text-xs text-gray-400 mb-1">Spray Acc</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {stats.sprayAccuracy}%
-                </p>
-              </div>
+              {stats.spottedAccuracy !== 0 && (
+                <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                  <p className="text-xs text-gray-400 mb-1">Spotted Acc</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {stats.spottedAccuracy}%
+                  </p>
+                </div>
+              )}
+              {stats.sprayAccuracy !== 0 && (
+                <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                  <p className="text-xs text-gray-400 mb-1">Spray Acc</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {stats.sprayAccuracy}%
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-3 gap-2">
@@ -227,12 +237,16 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
                   {stats.timeToDamage}
                 </p>
               </div>
-              <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
-                <p className="text-xs text-gray-400 mb-1">DPR</p>
-                <p className="text-xl sm:text-2xl font-bold text-white">
-                  {stats.damagePerRound}
-                </p>
-              </div>
+              {stats.damagePerRound !== 0 && (
+                <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
+                  <p className="text-xs text-gray-400 mb-1">DPR</p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {stats.damagePerRound}
+                  </p>
+                </div>
+              )}
+
+              
               <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">Preaim</p>
                 <p className="text-xl sm:text-2xl font-bold text-white">
@@ -248,11 +262,10 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
                   {stats.winHistory.map((result, index) => (
                     <div
                       key={index}
-                      className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${
-                        result === "W"
-                          ? "bg-emerald-500 text-white"
-                          : "bg-red-500 text-white"
-                      }`}
+                      className={`w-6 h-6 rounded flex items-center justify-center text-xs font-bold ${result === "W"
+                        ? "bg-emerald-500 text-white"
+                        : "bg-red-500 text-white"
+                        }`}
                     >
                       {result}
                     </div>
