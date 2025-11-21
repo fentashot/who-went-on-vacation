@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, LoaderCircle, User } from "lucide-react";
+import { AlertCircle, LoaderCircle } from "lucide-react";
 import { useTheme } from "@/contexts/theme-context";
-import { Skeleton } from "@/components/ui/skeleton";
 import { UserProfileCard } from "@/components/profile/user-profile-card";
 import { useLeetifyStats } from "@/hooks/use-leetify-stats";
 import { FriendProfile } from "@/types/steam";

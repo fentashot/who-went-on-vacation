@@ -17,7 +17,7 @@ import { type LeetifyDisplayStats } from "@/types/leetify";
  * Fetch Leetify stats
  */
 async function fetchLeetifyStats(steamId: string): Promise<LeetifyDisplayStats | null> {
-  const response = await fetch("/api/leetify", {
+  const response = await fetch("/api/v2/leetify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ steamId }),

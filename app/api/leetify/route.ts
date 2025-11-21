@@ -7,7 +7,7 @@ import {
   transformLeetifyData,
 } from "@/lib/leetify-helpers";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const { steamId } = await request.json();
 

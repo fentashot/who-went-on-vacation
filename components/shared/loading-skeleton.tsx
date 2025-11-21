@@ -48,14 +48,14 @@ export function LoadingSkeleton() {
         >
           <div className="h-10 w-96 bg-zinc-800/50 rounded mx-auto overflow-hidden relative">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent "
+              className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent "
               animate="visible"
               variants={shimmer}
             />
           </div>
           <div className="h-8 w-80 bg-zinc-800/50 rounded mx-auto overflow-hidden relative">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+              className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent"
               initial="hidden"
               animate="visible"
               variants={shimmer}
@@ -73,7 +73,7 @@ export function LoadingSkeleton() {
         >
           <div className="flex-1 h-10 bg-zinc-800/50 rounded-lg overflow-hidden relative">
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+              className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent"
               initial="hidden"
               animate="visible"
               variants={shimmer}
@@ -82,7 +82,7 @@ export function LoadingSkeleton() {
           <div className="flex gap-2">
             <div className="w-28 h-10 bg-zinc-800/50 rounded-lg overflow-hidden relative">
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent"
                 initial="hidden"
                 animate="visible"
                 variants={shimmer}
@@ -90,7 +90,7 @@ export function LoadingSkeleton() {
             </div>
             <div className="w-28 h-10 bg-zinc-800/50 rounded-lg overflow-hidden relative">
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent"
                 initial="hidden"
                 animate="visible"
                 variants={shimmer}
@@ -113,7 +113,7 @@ export function LoadingSkeleton() {
                 <CardContent className="p-6 h-32 relative">
                   {/* Shimmer effect */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                    className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent"
                     initial="hidden"
                     animate="visible"
                     variants={shimmer}

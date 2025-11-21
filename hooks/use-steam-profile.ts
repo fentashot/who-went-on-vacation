@@ -16,7 +16,7 @@ import { type ApiResponseSteam } from "@/types/steam";
  * Fetch Steam profile data
  */
 async function fetchSteamProfile(profileUrl: string): Promise<ApiResponseSteam> {
-  const response = await fetch("/api/steam", {
+  const response = await fetch("/api/v2/steam", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ profileUrl }),
