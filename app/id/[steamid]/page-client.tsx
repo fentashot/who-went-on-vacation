@@ -15,7 +15,10 @@ import { GridSizeSlider } from "@/components/layout/grid-size-slider";
 import { ThemeSelector } from "@/components/layout/theme-selector";
 import { ThemeBackground } from "@/components/layout/theme-background";
 import { LeetifyStats } from "@/components/profile/leetify-stats";
-import { useSteamProfile, useFetchSteamProfile } from "@/hooks/use-steam-profile";
+import {
+  useSteamProfile,
+  useFetchSteamProfile,
+} from "@/hooks/use-steam-profile";
 import { useTheme } from "@/contexts/theme-context";
 import { type SortOrder } from "@/types/steam";
 import { filterAndSortFriends } from "@/lib/utils";
@@ -28,7 +31,8 @@ export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
   const { themeConfig, gridSize } = useTheme();
   const { data: currentProfile, isLoading, error } = useSteamProfile(steamid);
-  const { mutateAsync: fetchProfile, isPending: isFetching } = useFetchSteamProfile();
+  const { mutateAsync: fetchProfile, isPending: isFetching } =
+    useFetchSteamProfile();
 
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,7 +54,10 @@ export function PageClient({ steamid }: PageClientProps) {
   };
 
   const friendsToDisplay = useMemo(
-    () => showOnlyBanned ? currentProfile?.bannedFriends ?? [] : currentProfile?.allFriends ?? [],
+    () =>
+      showOnlyBanned
+        ? (currentProfile?.bannedFriends ?? [])
+        : (currentProfile?.allFriends ?? []),
     [showOnlyBanned, currentProfile]
   );
 
@@ -62,10 +69,7 @@ export function PageClient({ steamid }: PageClientProps) {
   const loading = isLoading || isFetching;
 
   return (
-    <div
-      className=" bg-black text-white relative"
-      suppressHydrationWarning
-    >
+    <div className=" bg-black text-white relative" suppressHydrationWarning>
       <ThemeBackground
         mounted={mounted}
         themeConfig={themeConfig}
@@ -129,7 +133,7 @@ export function PageClient({ steamid }: PageClientProps) {
 
               {/* Friends Content */}
               {currentProfile.totalFriends === 0 &&
-                currentProfile.allFriends.length === 0 ? (
+              currentProfile.allFriends.length === 0 ? (
                 // Private profile or no friends
                 <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
                   <CardContent className="p-12 text-center">

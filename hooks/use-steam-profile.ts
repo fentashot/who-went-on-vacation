@@ -1,23 +1,30 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ApiResponseSteam, ApiErrorResponse } from "@/types/steam";
+import { hc } from "hono/client";
+import type { AppType } from "@/app/api/v2/[[...route]]/route";
+import type { ApiResponseSteam } from "@/types/steam";
 
 const STALE_TIME = 1000 * 60 * 30; // 30 minutes
 const GC_TIME = 1000 * 60 * 60; // 1 hour
 
+const { api } = hc<AppType>("/");
+
 async function fetchSteamProfile(profileUrl: string): Promise<ApiResponseSteam> {
-  const response = await fetch("/api/v2/steam", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ profileUrl }),
+  const response = await api.v2.steam.$post({
+    json: { profileUrl },
   });
 
-  const data: ApiResponseSteam | ApiErrorResponse = await response.json();
-
-  if (!response.ok || "error" in data) {
-    throw new Error("error" in data ? data.error : "Failed to fetch Steam profile");
+  if (!response.ok) {
+    const errorData = (await response.json()) as { error?: string };
+    throw new Error(errorData.error ?? "Failed to fetch Steam profile");
   }
 
-  return data;
+  const data = await response.json();
+
+  if ("error" in data && typeof data.error === "string") {
+    throw new Error(data.error);
+  }
+
+  return data as ApiResponseSteam;
 }
 
 export function useSteamProfile(profileUrl: string | null) {
