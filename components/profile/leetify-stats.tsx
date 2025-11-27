@@ -49,7 +49,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
 
   if (isLoading) {
     return (
-      <div className="p-5 sm:p-10 max-w-3xl h-116 mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
+      <div className="p-5 sm:p-10 max-w-3xl h-116 mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl">
         <UserProfileCard profile={userProfile!} />
         <CardContent className="flex justify-center items-center flex-col text-center mt-[12vh]">
           <LoaderCircle className="animate-spin w-12 h-12 text-zinc-600/20 mb-4" />
@@ -60,7 +60,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
 
   if (error || !stats) {
     return (
-      <div className="p-5 sm:p-10 max-w-3xl mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
+      <div className="p-5 sm:p-10 max-w-3xl mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl">
         <UserProfileCard profile={userProfile!} />
         <CardContent className="flex justify-center items-center flex-col text-center">
           <AlertCircle className="w-10 h-10 text-red-500 mb-2" />
@@ -76,7 +76,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
   }
 
   return (
-    <div className="max-w-3xl duration-500 mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl">
+    <div className="max-w-3xl mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl">
       <CardContent className="p-5 sm:p-10">
         <UserProfileCard profile={userProfile!} />
         <div className="flex sm:items-start justify-between">
