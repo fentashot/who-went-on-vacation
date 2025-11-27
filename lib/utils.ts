@@ -5,27 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-//Load grid size from localStorage or return default value
-export function getStoredGridSize(): number {
-  if (typeof window === "undefined") return 18;
-  const saved = localStorage.getItem("gridSize");
-  return saved ? Number(saved) : 18;
-}
-
-//Save grid size to localStorage
-export function saveGridSize(size: number): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("gridSize", String(size));
-}
-
-//Create a cache key from profile ID
-export function createCacheKey(profileId: string): string {
-  return profileId.trim().toLowerCase();
-}
-
-/**
- * Filter and sort friends based on search query and sort order
- */
+/** Filter and sort friends by name and ban date */
 export function filterAndSortFriends<
   T extends { personaname: string; DaysSinceLastBan: number }
 >(friends: T[], searchQuery: string, sortOrder: "newest" | "oldest"): T[] {

@@ -6,7 +6,6 @@ import { SteamSearchBar } from "@/components/search/steam-search-bar";
 import { ThemeBackground } from "@/components/layout/theme-background";
 import { useTheme } from "@/contexts/theme-context";
 import { useFetchSteamProfile } from "@/hooks/use-steam-profile";
-import Link from "next/link";
 
 export function HomeClient() {
   const [mounted, setMounted] = useState(false);
@@ -28,9 +27,8 @@ export function HomeClient() {
     try {
       await fetchProfile(profileUrl);
       router.push(`/id/${profileUrl}`);
-    } catch (err) {
-      // Error is handled by React Query and displayed in SteamSearchBar
-      console.error("Search failed:", err);
+    } catch {
+      // Error handled by React Query
     }
   };
 

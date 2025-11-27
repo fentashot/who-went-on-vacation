@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, LoaderCircle } from "lucide-react";
@@ -15,86 +14,69 @@ interface LeetifyStatsProps {
   userProfile?: FriendProfile;
 }
 
+function getFaceitBadgeClass(elo: number): string {
+  if (!elo || elo <= 0) return "bg-black/10 border-zinc-700/50 text-white";
+  if (elo >= 2001) return "bg-black/10 border-red-500 text-red-300";
+  if (elo >= 1751) return "bg-black/10 border-orange-400 text-orange-300";
+  if (elo >= 1531) return "bg-black/10 border-amber-400 text-amber-300";
+  if (elo >= 1351) return "bg-black/10 border-yellow-400 text-yellow-300";
+  if (elo >= 1201) return "bg-black/10 border-lime-400 text-lime-300";
+  if (elo >= 1051) return "bg-black/10 border-emerald-500 text-emerald-300";
+  if (elo >= 901) return "bg-black/10 border-sky-400 text-sky-300";
+  if (elo >= 751) return "bg-black/10 border-cyan-400 text-cyan-300";
+  if (elo >= 501) return "bg-black/10 border-blue-400 text-blue-300";
+  return "bg-black/10 border-zinc-700/50 text-white";
+}
+
+function getPremierBadgeClass(pts: number): string {
+  if (!pts || pts <= 0) return "bg-black/10 border-zinc-700/50 text-white";
+  if (pts >= 30000) return "bg-black/10 border-amber-400 text-amber-300";
+  if (pts >= 25000) return "bg-black/10 border-red-400 text-red-300";
+  if (pts >= 20000) return "bg-black/10 border-pink-500 text-pink-300";
+  if (pts >= 15000) return "bg-black/10 border-violet-500 text-violet-300";
+  if (pts >= 10000) return "bg-black/10 border-indigo-500 text-indigo-300";
+  if (pts >= 5000) return "bg-black/10 border-sky-400 text-sky-300";
+  return "bg-black/10 border-zinc-700/50 text-white";
+}
+
 export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
   const { themeConfig } = useTheme();
-
-  // Memoize the steamId to prevent unnecessary re-renders
-  const memoizedSteamId = useMemo(() => steamId, [steamId]);
-
-  const { data: stats, isLoading, error } = useLeetifyStats(memoizedSteamId);
+  const { data: stats, isLoading, error } = useLeetifyStats(steamId);
 
   const leetifyUrl = `https://leetify.com/public/profile/${steamId}`;
-
-  // Determine badge color based on FACEIT ELO ranges.
-  // These ranges are approximate and map to visual tiers (higher = stronger).
-  const faceitBadgeClass = useMemo(() => {
-    const elo = Number(stats?.faceit_elo ?? 0);
-    if (!elo || elo <= 0) return "bg-black/10 border-zinc-700/50 text-white";
-    if (elo >= 2001) return "bg-black/10 border-red-500 text-red-300"; // top
-    if (elo >= 1751) return "bg-black/10 border-orange-400 text-orange-300";
-    if (elo >= 1531) return "bg-black/10 border-amber-400 text-amber-300";
-    if (elo >= 1351) return "bg-black/10 border-yellow-400 text-yellow-300";
-    if (elo >= 1201) return "bg-black/10 border-lime-400 text-lime-300";
-    if (elo >= 1051) return "bg-black/10 border-emerald-500 text-emerald-300";
-    if (elo >= 901) return "bg-black/10 border-sky-400 text-sky-300";
-    if (elo >= 751) return "bg-black/10 border-cyan-400 text-cyan-300";
-    if (elo >= 501) return "bg-black/10 border-blue-400 text-blue-300";
-    return "bg-black/10 border-zinc-700/50 text-white";
-  }, [stats?.faceit_elo]);
-
-  // Determine badge color for Premier points (approximate brackets)
-  const premierBadgeClass = useMemo(() => {
-    const pts = Number(stats?.premier ?? 0);
-    if (!pts || pts <= 0) return "bg-black/10 border-zinc-700/50 text-white";
-    if (pts >= 30000) return "bg-black/10 border-amber-400 text-amber-300"; // 30k+
-    if (pts >= 25000) return "bg-black/10 border-red-400 text-red-300"; // 25k-29,999
-    if (pts >= 20000) return "bg-black/10 border-pink-500 text-pink-300"; // 20k-24,999
-    if (pts >= 15000) return "bg-black/10 border-violet-500 text-violet-300"; // 15k-19,999
-    if (pts >= 10000) return "bg-black/10 border-indigo-500 text-indigo-300"; // 10k-14,999
-    if (pts >= 5000) return "bg-black/10 border-sky-400 text-sky-300"; // 5k-9,999
-    return "bg-black/10 border-zinc-700/50 text-white"; // <5k
-  }, [stats?.premier]);
+  const faceitBadgeClass = getFaceitBadgeClass(Number(stats?.faceit_elo ?? 0));
+  const premierBadgeClass = getPremierBadgeClass(Number(stats?.premier ?? 0));
 
   if (isLoading) {
     return (
-      <div className=" gap-4">
-        {/* <div className="grid">
-          {userProfile && <UserProfileCard profile={userProfile} />}
-        </div> */}
-        <div className="p-5 sm:p-10 max-w-3xl h-116 mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
-          <UserProfileCard profile={userProfile!} />
-          <CardContent className="flex justify-center items-center flex-col text-center mt-[12vh]">
-            <LoaderCircle className="animate-spin w-12 h-12 text-zinc-600/20 mb-4" />
-          </CardContent>
-        </div>
+      <div className="p-5 sm:p-10 max-w-3xl h-116 mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
+        <UserProfileCard profile={userProfile!} />
+        <CardContent className="flex justify-center items-center flex-col text-center mt-[12vh]">
+          <LoaderCircle className="animate-spin w-12 h-12 text-zinc-600/20 mb-4" />
+        </CardContent>
       </div>
     );
   }
 
   if (error || !stats) {
     return (
-      <div className=" gap-4">
-        {/* <div className="grid">
-          {userProfile && <UserProfileCard profile={userProfile} />}
-        </div> */}
-        <div className="p-5 sm:p-10 max-w-3xl mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
-          <UserProfileCard profile={userProfile!} />
-          <CardContent className="flex justify-center items-center flex-col text-center">
-            <AlertCircle className="w-10 h-10 text-red-500 mb-2 " />
-            <h3 className="text-lg font-semibold text-red-400 mb-1">
-              Leetify Stats Unavailable
-            </h3>
-            <p className="text-gray-400">
-              {error?.message || "Failed to load Leetify stats"}
-            </p>{" "}
-          </CardContent>
-        </div>
+      <div className="p-5 sm:p-10 max-w-3xl mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 transition backdrop-blur-md overflow-hidden rounded-2xl">
+        <UserProfileCard profile={userProfile!} />
+        <CardContent className="flex justify-center items-center flex-col text-center">
+          <AlertCircle className="w-10 h-10 text-red-500 mb-2" />
+          <h3 className="text-lg font-semibold text-red-400 mb-1">
+            Leetify Stats Unavailable
+          </h3>
+          <p className="text-gray-400">
+            {error?.message || "Failed to load Leetify stats"}
+          </p>
+        </CardContent>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl duration-500 mx-auto xl:col-span-3 bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl ">
+    <div className="max-w-3xl duration-500 mx-auto bg-zinc-900/30 border-zinc-800/50 border hover:border-zinc-700/70 backdrop-blur-md overflow-hidden rounded-2xl">
       <CardContent className="p-5 sm:p-10">
         <UserProfileCard profile={userProfile!} />
         <div className="flex sm:items-start justify-between">
@@ -246,7 +228,7 @@ export function LeetifyStats({ steamId, userProfile }: LeetifyStatsProps) {
                 </div>
               )}
 
-              
+
               <div className="bg-zinc-800/50 rounded-lg p-2 px-3">
                 <p className="text-xs text-gray-400 mb-1">Preaim</p>
                 <p className="text-xl sm:text-2xl font-bold text-white">

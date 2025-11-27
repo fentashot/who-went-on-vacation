@@ -1,8 +1,7 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, BarChart3 } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import Image from "next/image";
 import { FriendProfile } from "@/types/steam";
 import { SteamIcon } from "@/components/friends/banned-friend-card";

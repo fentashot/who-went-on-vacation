@@ -3,8 +3,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUp, ArrowDown } from "lucide-react";
-
-// UI Components
 import { Card, CardContent } from "@/components/ui/card";
 import { LoadingSkeleton } from "@/components/shared/loading-skeleton";
 import { SteamSearchBar } from "@/components/search/steam-search-bar";
@@ -16,85 +14,50 @@ import { ViewToggle } from "@/components/layout/view-toggle";
 import { GridSizeSlider } from "@/components/layout/grid-size-slider";
 import { ThemeSelector } from "@/components/layout/theme-selector";
 import { ThemeBackground } from "@/components/layout/theme-background";
-
-// Hooks & Types
-import {
-  useSteamProfile,
-  useFetchSteamProfile,
-} from "@/hooks/use-steam-profile";
+import { LeetifyStats } from "@/components/profile/leetify-stats";
+import { useSteamProfile, useFetchSteamProfile } from "@/hooks/use-steam-profile";
 import { useTheme } from "@/contexts/theme-context";
 import { type SortOrder } from "@/types/steam";
-
-// Utils
 import { filterAndSortFriends } from "@/lib/utils";
-import { LeetifyStats } from "@/components/profile/leetify-stats";
 
 interface PageClientProps {
   steamid: string;
 }
 
-/**
-* PageClient:
-* - useSteamProfile: retrieve profile + friends/bans (cached)
-* - render profile card, stats and friends list
-* - allow searching (prefetch + navigate)
-*
-* Caching, retries and refetch behavior are configured inside hooks
-* to keep component logic concise and predictable.
-*/
-
 export function PageClient({ steamid }: PageClientProps) {
   const router = useRouter();
   const { themeConfig, gridSize } = useTheme();
-
-  // React Query hooks
   const { data: currentProfile, isLoading, error } = useSteamProfile(steamid);
-  const { mutateAsync: fetchProfile, isPending: isFetching } =
-    useFetchSteamProfile();
+  const { mutateAsync: fetchProfile, isPending: isFetching } = useFetchSteamProfile();
 
-  // UI State
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
   const [showOnlyBanned, setShowOnlyBanned] = useState(true);
 
-  // Mount animation effect
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // Handlers
   const handleSearch = async (profileUrl: string) => {
     try {
       await fetchProfile(profileUrl);
       router.push(`/id/${profileUrl}`);
-    } catch (err) {
-      // Error is handled by React Query
-      console.error("Search failed:", err);
+    } catch {
+      // Error handled by React Query
     }
   };
 
-  // Computed values
-  const friendsToDisplay = useMemo(() => {
-    return showOnlyBanned
-      ? currentProfile?.bannedFriends ?? []
-      : currentProfile?.allFriends ?? [];
-  }, [showOnlyBanned, currentProfile]);
+  const friendsToDisplay = useMemo(
+    () => showOnlyBanned ? currentProfile?.bannedFriends ?? [] : currentProfile?.allFriends ?? [],
+    [showOnlyBanned, currentProfile]
+  );
 
   const filteredAndSortedFriends = useMemo(
     () => filterAndSortFriends(friendsToDisplay, searchQuery, sortOrder),
     [friendsToDisplay, searchQuery, sortOrder]
   );
-
-  // Memoize leetify stats props to prevent re-renders
-  const leetifyStatsProps = useMemo(() => {
-    if (!currentProfile?.userProfile?.steamid) return null;
-    return {
-      steamId: currentProfile.userProfile.steamid,
-      userProfile: currentProfile.userProfile,
-    };
-  }, [currentProfile]);
 
   const loading = isLoading || isFetching;
 
@@ -139,10 +102,10 @@ export function PageClient({ steamid }: PageClientProps) {
           {currentProfile && (
             <div className="w-full space-y-14 mx-auto">
               <div className="max-w-6xl mx-auto">
-                {leetifyStatsProps && (
+                {currentProfile.userProfile?.steamid && (
                   <LeetifyStats
-                    steamId={leetifyStatsProps.steamId}
-                    userProfile={leetifyStatsProps.userProfile}
+                    steamId={currentProfile.userProfile.steamid}
+                    userProfile={currentProfile.userProfile}
                   />
                 )}
               </div>

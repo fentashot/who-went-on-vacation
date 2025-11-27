@@ -1,21 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { type LeetifyDisplayStats } from "@/types/leetify";
+import type { LeetifyDisplayStats, LeetifyApiResponse } from "@/types/leetify";
 
-/**
- * useLeetifyStats
- * ----------------
- * Fetch Leetify aggregated stats for a Steam ID. We intentionally:
- * - Use a moderate `staleTime` (30m) to reduce requests to external services.
- * - Disable refetch-on-mount/window-focus (set in the hook) so cached results
- *   are reused across navigations.
- * - Return `LeetifyDisplayStats | null` when a profile is not present on
- *   Leetify (API returns `stats: null` in that case) to allow UI to render
- *   a friendly fallback rather than an error.
- */
+const STALE_TIME = 1000 * 60 * 30; // 30 minutes
+const GC_TIME = 1000 * 60 * 60; // 1 hour
 
-/**
- * Fetch Leetify stats
- */
 async function fetchLeetifyStats(steamId: string): Promise<LeetifyDisplayStats | null> {
   const response = await fetch("/api/v2/leetify", {
     method: "POST",
@@ -23,28 +11,25 @@ async function fetchLeetifyStats(steamId: string): Promise<LeetifyDisplayStats |
     body: JSON.stringify({ steamId }),
   });
 
-  const data = await response.json();
+  const data: LeetifyApiResponse | { error: string } = await response.json();
 
-  if (!response.ok) {
-    throw new Error(data.error || "Failed to fetch Leetify stats");
+  if (!response.ok || "error" in data) {
+    throw new Error("error" in data ? data.error : "Failed to fetch Leetify stats");
   }
 
-  // Return null if profile not found, otherwise return stats
   return data.stats;
-}/**
- * Hook to fetch Leetify stats
- */
+}
+
 export function useLeetifyStats(steamId: string | null | undefined) {
   return useQuery({
     queryKey: ["leetify-stats", steamId],
     queryFn: () => fetchLeetifyStats(steamId!),
     enabled: !!steamId,
-    staleTime: 1000 * 60 * 30, // 30 minutes
-    gcTime: 1000 * 60 * 60, // 1 hour
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
     retry: 1,
-    refetchOnMount: false, // Don't refetch on mount if data is still fresh
-    refetchOnWindowFocus: false, // Don't refetch on window focus
-    // Cache errors for 5 minutes to prevent repeated failed requests
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
     retryOnMount: false,
     throwOnError: false,
   });

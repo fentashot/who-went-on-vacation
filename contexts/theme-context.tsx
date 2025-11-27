@@ -173,35 +173,20 @@ export function ThemeProvider({
   const [isPending, startTransition] = useTransition();
 
   const setTheme = (newTheme: Theme) => {
-    // Use transition for smooth color changes
     startTransition(() => {
       setThemeState(newTheme);
     });
-
-    // Save to cookies in background
-    setThemeInCookies(newTheme).catch((error) => {
-      console.error("Failed to save theme preference:", error);
-    });
+    setThemeInCookies(newTheme).catch(() => { });
   };
 
   const setGridSize = (newSize: number) => {
-    // Update state immediately for instant slider response
     setGridSizeState(newSize);
-
-    // Save to cookies in background
-    setGridSizeInCookies(newSize).catch((error) => {
-      console.error("Failed to save grid size preference:", error);
-    });
+    setGridSizeInCookies(newSize).catch(() => { });
   };
 
   const setCompactView = (newCompact: boolean) => {
-    // Update state immediately for instant UI response
     setCompactViewState(newCompact);
-
-    // Save to cookies in background without blocking
-    setCompactViewInCookies(newCompact).catch((error) => {
-      console.error("Failed to save compact view preference:", error);
-    });
+    setCompactViewInCookies(newCompact).catch(() => { });
   };
 
   const themeConfig = getThemeConfig(theme);

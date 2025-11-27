@@ -2,18 +2,33 @@ import { unstable_cache } from "next/cache";
 import type {
   LeetifyProfileResponse,
   LeetifyDisplayStats,
+  LeetifyMatchStat,
+  MatchStatsResult,
+  SkillData,
 } from "@/types/leetify";
 
 const LEETIFY_API_KEY = process.env.LEETIFY_API_KEY;
 const LEETIFY_BASE_URL = "https://api-public.cs-prod.leetify.com";
-const CACHE_REVALIDATE_TIME = 1800;
+const CACHE_TTL = 1800; // 30 minutes
 
 export function isValidSteam64Id(steamId: string): boolean {
   return /^\d{17}$/.test(steamId);
 }
 
+interface LeetifyMatchApiEntry {
+  stats?: Array<{
+    steam64_id?: string;
+    total_kills?: number;
+    total_deaths?: number;
+    total_hs_kills?: number;
+    dpr?: number;
+    rounds_count?: number;
+    total_damage?: number;
+  }>;
+}
+
 export const getCachedLeetifyMatches = unstable_cache(
-  async (steam64Id: string) => {
+  async (steam64Id: string): Promise<LeetifyMatchStat[] | null> => {
     const headers: HeadersInit = {};
     if (LEETIFY_API_KEY) headers["_leetify_key"] = LEETIFY_API_KEY;
 
@@ -24,31 +39,12 @@ export const getCachedLeetifyMatches = unstable_cache(
 
     if (!response.ok) return null;
 
-    const data = await response.json();
-    const playerStats = data
-      .map((match: {
-        stats?: Array<{
-          steam64_id?: string;
-          total_kills?: number;
-          total_deaths?: number;
-          total_hs_kills?: number;
-          dpr?: number;
-          rounds_count?: number;
-          total_damage?: number;
-        }>
-      }) =>
-        match.stats?.find((stat) => stat.steam64_id === steam64Id)
-      )
-      .filter(Boolean)
+    const data: LeetifyMatchApiEntry[] = await response.json();
+    const playerStats: LeetifyMatchStat[] = data
+      .map((match) => match.stats?.find((stat) => stat.steam64_id === steam64Id))
+      .filter((stat): stat is NonNullable<typeof stat> => Boolean(stat))
       .slice(0, 30)
-      .map((stat: {
-        total_kills?: number;
-        total_deaths?: number;
-        total_hs_kills?: number;
-        dpr?: number;
-        rounds_count?: number;
-        total_damage?: number;
-      }) => ({
+      .map((stat) => ({
         total_kills: stat.total_kills ?? 0,
         total_deaths: stat.total_deaths ?? 0,
         total_hs_kills: stat.total_hs_kills ?? 0,
@@ -60,20 +56,10 @@ export const getCachedLeetifyMatches = unstable_cache(
     return playerStats;
   },
   ["leetify-matches"],
-  { revalidate: CACHE_REVALIDATE_TIME, tags: ["leetify-stats"] }
+  { revalidate: CACHE_TTL, tags: ["leetify-stats"] }
 );
 
-export function calculateMatchStats(
-  matches: Array<{
-    total_kills: number;
-    total_deaths: number;
-    total_hs_kills: number;
-    dpr: number;
-    rounds_count: number;
-    total_damage: number;
-  }> | null
-): { kd: number; hsP: number; avgDpr: number; killsPerRound: number } {
-
+export function calculateMatchStats(matches: LeetifyMatchStat[] | null): MatchStatsResult {
   if (!matches?.length) return { kd: 0, hsP: 0, avgDpr: 0, killsPerRound: 0 };
 
   const totals = matches.reduce(
@@ -113,20 +99,20 @@ export const getCachedLeetifyProfile = unstable_cache(
     return response.json() as Promise<LeetifyProfileResponse>;
   },
   ["leetify-profile"],
-  { revalidate: CACHE_REVALIDATE_TIME, tags: ["leetify-stats"] }
+  { revalidate: CACHE_TTL, tags: ["leetify-stats"] }
 );
 
 export function transformLeetifyData(
   profile: LeetifyProfileResponse,
-  matchStats: { kd: number; hsP: number; avgDpr: number; killsPerRound: number }
+  matchStats: MatchStatsResult
 ): LeetifyDisplayStats {
-  const createSkill = (name: string, value: number) => ({
+  const createSkill = (name: string, value: number): SkillData => ({
     name,
     value: Math.round(value),
     color: getSkillColor(value),
   });
 
-  const skills = [
+  const skills: SkillData[] = [
     createSkill("Aim", profile.rating?.aim ?? 0),
     createSkill("Utility", profile.rating?.utility ?? 0),
     createSkill("Positioning", profile.rating?.positioning ?? 0),
@@ -141,19 +127,19 @@ export function transformLeetifyData(
   return {
     rating: Math.round((profile.ranks?.leetify ?? 0) * 100) / 100,
     matches: profile.total_matches ?? 0,
-    faceit: profile.ranks?.faceit ?? 0,
-    faceit_elo: profile.ranks?.faceit_elo ?? 0,
-    premier: profile.ranks?.premier ?? 0,
+    faceit: profile.ranks?.faceit ?? null,
+    faceit_elo: profile.ranks?.faceit_elo ?? null,
+    premier: profile.ranks?.premier ?? null,
     competitive: profile.ranks?.competitive?.[0]?.rank ?? 0,
     kd: Math.round(matchStats.kd * 100) / 100,
-    preaim: Math.round(profile.stats?.preaim * 100) / 100 || 0,
+    preaim: Math.round((profile.stats?.preaim ?? 0) * 100) / 100,
     headAccuracy: Math.round(matchStats.hsP),
     winrate: Math.round((profile.winrate ?? 0) * 100),
     killsPerRound: Math.round(matchStats.killsPerRound * 100) / 100,
-    spottedAccuracy: Math.round((profile.stats?.accuracy_enemy_spotted ?? 0)),
+    spottedAccuracy: Math.round(profile.stats?.accuracy_enemy_spotted ?? 0),
     damagePerRound: Math.round(matchStats.avgDpr),
     timeToDamage: `${Math.round(profile.stats?.reaction_time_ms ?? 0)}ms`,
-    sprayAccuracy: Math.round((profile.stats?.spray_accuracy ?? 0)),
+    sprayAccuracy: Math.round(profile.stats?.spray_accuracy ?? 0),
     skills,
     winHistory,
     nickname: profile.name ?? "Unknown",

@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, type ReactNode } from "react";
 
+const isDev = process.env.NODE_ENV === "development";
+
 export function QueryProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () =>
@@ -11,17 +13,19 @@ export function QueryProvider({ children }: { children: ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: 1000 * 60 * 5, // 5 minutes
-            gcTime: 1000 * 60 * 30, // 30 minutes (was cacheTime)
+            gcTime: 1000 * 60 * 30, // 30 minutes
             refetchOnWindowFocus: false,
             refetchOnMount: false,
             retry: 1,
           },
         },
       })
-  ); return (
+  );
+
+  return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {isDev && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

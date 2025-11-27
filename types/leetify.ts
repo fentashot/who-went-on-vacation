@@ -60,10 +60,9 @@ export interface LeetifyStats {
   trade_kill_opportunities_per_round: number;
   trade_kills_success_percentage: number;
   utility_on_death_avg: number;
-  kd_ratio: number; // Kill/Death ratio
+  kd_ratio: number;
   kills_per_round: number;
   deaths_per_round: number;
-
 }
 
 export interface LeetifyRecentGame {
@@ -78,13 +77,38 @@ export interface LeetifyRecentGame {
   assists: number;
 }
 
-// Simplified stats for UI display
+/** Individual match stat entry from Leetify matches API */
+export interface LeetifyMatchStat {
+  total_kills: number;
+  total_deaths: number;
+  total_hs_kills: number;
+  dpr: number;
+  rounds_count: number;
+  total_damage: number;
+}
+
+/** Calculated stats from match history */
+export interface MatchStatsResult {
+  kd: number;
+  hsP: number;
+  avgDpr: number;
+  killsPerRound: number;
+}
+
+/** Skill bar data for UI */
+export interface SkillData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+/** Simplified stats for UI display */
 export interface LeetifyDisplayStats {
   rating: number;
   matches: number;
-  faceit: number;
-  faceit_elo: number;
-  premier: number;
+  faceit: number | null;
+  faceit_elo: number | null;
+  premier: number | null;
   competitive: number;
   kd: number;
   preaim: number;
@@ -95,8 +119,14 @@ export interface LeetifyDisplayStats {
   damagePerRound: number;
   timeToDamage: string;
   sprayAccuracy: number;
-  skills: Array<{ name: string; value: number; color: string }>;
+  skills: SkillData[];
   winHistory: string[];
   nickname: string;
   lastMatchAt: string;
+}
+
+/** API response for /api/v2/leetify */
+export interface LeetifyApiResponse {
+  stats: LeetifyDisplayStats | null;
+  message?: string;
 }
