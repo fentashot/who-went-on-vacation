@@ -111,106 +111,104 @@ export function PageClient({ steamid }: PageClientProps) {
               </div>
 
               {/* Friends Section */}
-              <div className="space-y-5">
-                {/* Section Header */}
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold text-white mb-2 px-2">
-                    {currentProfile.message}
-                  </h2>
-                  {currentProfile.totalFriends !== undefined && (
-                    <FriendsFilterToggle
-                      showOnlyBanned={showOnlyBanned}
-                      onToggle={setShowOnlyBanned}
-                      totalFriends={currentProfile.totalFriends}
-                      bannedCount={currentProfile.bannedFriends.length}
-                      themeConfig={themeConfig}
-                    />
-                  )}
-                </div>
-
-                {/* Friends Content */}
-                {currentProfile.totalFriends === 0 &&
-                  currentProfile.allFriends.length === 0 ? (
-                  // Private profile or no friends
-                  <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
-                    <CardContent className="p-12 text-center">
-                      <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-yellow-100 rounded-full">
-                        <svg
-                          className="w-8 h-8 text-yellow-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-semibold text-yellow-400 mb-2">
-                        Friends List Private
-                      </h3>
-                      <p className="text-gray-400">
-                        This Steam profile has a private friends list or no
-                        friends added yet.
-                      </p>
-                    </CardContent>
-                  </Card>
-                ) : friendsToDisplay.length > 0 ? (
-                  <>
-                    {/* Search & Sort Controls */}
-                    <div className="mb-4 flex flex-row gap-1 ">
-                      <FriendsSearchBar
-                        value={searchQuery}
-                        onChange={setSearchQuery}
-                      />
-                      <div className="flex gap-1">
-                        <SortButton
-                          order="newest"
-                          icon={ArrowUp}
-                          currentSortOrder={sortOrder}
-                          onSort={setSortOrder}
-                          themeConfig={themeConfig}
-                        />
-                        <SortButton
-                          order="oldest"
-                          icon={ArrowDown}
-                          currentSortOrder={sortOrder}
-                          onSort={setSortOrder}
-                          themeConfig={themeConfig}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Search Results Count */}
-                    {searchQuery && (
-                      <p className="text-sm text-gray-400 mb-3">
-                        Showing {filteredAndSortedFriends.length} of{" "}
-                        {friendsToDisplay.length}{" "}
-                        {showOnlyBanned ? "banned friends" : "friends"}
-                      </p>
-                    )}
-
-                    {/* Friends List */}
-                    <FriendsList
-                      friends={filteredAndSortedFriends}
-                      searchQuery={searchQuery}
-                      themeConfig={themeConfig}
-                    />
-                  </>
-                ) : (
-                  // Has friends but none match current filter (banned/all)
-                  <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
-                    <CardContent className="p-12 text-center">
-                      <p className="text-gray-400 text-lg">
-                        🎉 None of your friends have VAC or game bans!
-                      </p>
-                    </CardContent>
-                  </Card>
+              {/* Section Header */}
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-white mb-2 px-2">
+                  {currentProfile.message}
+                </h2>
+                {currentProfile.totalFriends !== undefined && (
+                  <FriendsFilterToggle
+                    showOnlyBanned={showOnlyBanned}
+                    onToggle={setShowOnlyBanned}
+                    totalFriends={currentProfile.totalFriends}
+                    bannedCount={currentProfile.bannedFriends.length}
+                    themeConfig={themeConfig}
+                  />
                 )}
               </div>
+
+              {/* Friends Content */}
+              {currentProfile.totalFriends === 0 &&
+                currentProfile.allFriends.length === 0 ? (
+                // Private profile or no friends
+                <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
+                  <CardContent className="p-12 text-center">
+                    <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-yellow-100 rounded-full">
+                      <svg
+                        className="w-8 h-8 text-yellow-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-semibold text-yellow-400 mb-2">
+                      Friends List Private
+                    </h3>
+                    <p className="text-gray-400">
+                      This Steam profile has a private friends list or no
+                      friends added yet.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : friendsToDisplay.length > 0 ? (
+                <>
+                  {/* Search & Sort Controls */}
+                  <div className="mb-3 flex flex-row gap-1 ">
+                    <FriendsSearchBar
+                      value={searchQuery}
+                      onChange={setSearchQuery}
+                    />
+                    <div className="flex gap-1">
+                      <SortButton
+                        order="newest"
+                        icon={ArrowUp}
+                        currentSortOrder={sortOrder}
+                        onSort={setSortOrder}
+                        themeConfig={themeConfig}
+                      />
+                      <SortButton
+                        order="oldest"
+                        icon={ArrowDown}
+                        currentSortOrder={sortOrder}
+                        onSort={setSortOrder}
+                        themeConfig={themeConfig}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Search Results Count */}
+                  {searchQuery && (
+                    <p className="text-sm text-gray-400 mb-3">
+                      Showing {filteredAndSortedFriends.length} of{" "}
+                      {friendsToDisplay.length}{" "}
+                      {showOnlyBanned ? "banned friends" : "friends"}
+                    </p>
+                  )}
+
+                  {/* Friends List */}
+                  <FriendsList
+                    friends={filteredAndSortedFriends}
+                    searchQuery={searchQuery}
+                    themeConfig={themeConfig}
+                  />
+                </>
+              ) : (
+                // Has friends but none match current filter (banned/all)
+                <Card className="bg-zinc-900/30 border-zinc-800/50 backdrop-blur-md">
+                  <CardContent className="p-12 text-center">
+                    <p className="text-gray-400 text-lg">
+                      🎉 None of your friends have VAC or game bans!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
         </div>
